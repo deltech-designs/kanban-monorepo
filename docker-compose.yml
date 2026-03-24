@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api-runtime
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      HOST: 0.0.0.0
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+    command: pnpm --filter @kanban/api dev
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web-runtime
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+    depends_on:
+      - api
+    command: pnpm --filter @kanban/web dev

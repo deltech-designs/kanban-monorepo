@@ -1,0 +1,3670 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.eslintrc.json
+.github/instruction.md
+.github/workflows/ci.yml
+.gitignore
+.prettierrc
+apps/api/.env.example
+apps/api/package.json
+apps/api/src/index.ts
+apps/api/src/routes/boards.ts
+apps/api/src/routes/health.ts
+apps/api/src/routes/tasks.ts
+apps/api/tsconfig.json
+apps/web/.env.example
+apps/web/next-env.d.ts
+apps/web/next.config.js
+apps/web/package.json
+apps/web/postcss.config.mjs
+apps/web/src/app/globals.css
+apps/web/src/app/layout.tsx
+apps/web/src/app/page.tsx
+apps/web/src/app/signup/page.tsx
+apps/web/src/components/ui/Input.tsx
+apps/web/src/lib/api-client.ts
+apps/web/tsconfig.json
+docker-compose.yml
+Dockerfile
+docs/API.md
+docs/ARCHITECTURE.md
+docs/DEPLOYMENT.md
+docs/DEVELOPMENT.md
+package.json
+packages/config/package.json
+packages/config/src/index.ts
+packages/config/tsconfig.json
+packages/config/tsconfig.tsbuildinfo
+packages/types/package.json
+packages/types/src/api/index.ts
+packages/types/src/domain/index.ts
+packages/types/src/index.ts
+packages/types/tsconfig.json
+packages/types/tsconfig.tsbuildinfo
+packages/utils/package.json
+packages/utils/src/formatting/index.ts
+packages/utils/src/index.ts
+packages/utils/src/validation/index.ts
+packages/utils/tsconfig.json
+packages/utils/tsconfig.tsbuildinfo
+pnpm-workspace.yaml
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".eslintrc.json">
+{
+  "root": true,
+  "extends": ["eslint:recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "es2020": true
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-console": [
+      "warn",
+      {
+        "allow": ["warn", "error", "log"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["apps/web/**/*.ts", "apps/web/**/*.tsx"],
+      "parser": "@typescript-eslint/parser",
+      "extends": ["eslint:recommended", "next/core-web-vitals"],
+      "rules": {
+        "react/react-in-jsx-scope": "off"
+      }
+    }
+  ]
+}
+</file>
+
+<file path=".github/instruction.md">
+
+</file>
+
+<file path=".github/workflows/ci.yml">
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Type checking
+        run: pnpm typecheck
+      
+      - name: Linting
+        run: pnpm lint
+      
+      - name: Build
+        run: pnpm build
+      
+      - name: Tests
+        run: pnpm test --run
+</file>
+
+<file path=".gitignore">
+# Dependencies
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
+
+# Build output
+dist/
+build/
+.next/
+out/
+.nuxt/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache
+.turbo/
+.cache/
+.eslintcache
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+</file>
+
+<file path=".prettierrc">
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "arrowParens": "always"
+}
+</file>
+
+<file path="apps/api/.env.example">
+NODE_ENV=development
+PORT=3001
+HOST=localhost
+CORS_ORIGIN=http://localhost:3000
+NODE_ENV=development
+</file>
+
+<file path="apps/api/package.json">
+{
+  "name": "@kanban/api",
+  "version": "1.0.0",
+  "description": "Express API backend for Kanban application",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "predev": "pnpm --filter @kanban/types --filter @kanban/utils --filter @kanban/config build",
+    "dev": "tsx --watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@kanban/config": "workspace:*",
+    "@kanban/types": "workspace:*",
+    "@kanban/utils": "workspace:*",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "typegoose": "^5.9.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^20.10.6",
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
+</file>
+
+<file path="apps/api/src/index.ts">
+import express, { Express, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import { v4 as uuidv4 } from 'uuid';
+import { ApiResponse } from '@kanban/types';
+import { getEnvVar, isDevelopment } from '@kanban/utils';
+import { API_BASE_URL, APP_NAME, APP_VERSION } from '@kanban/config';
+
+import boardRoutes from './routes/boards';
+import taskRoutes from './routes/tasks';
+import healthRoutes from './routes/health';
+
+const app: Express = express();
+
+// Middleware
+app.use(helmet());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
+    credentials: true,
+  }),
+);
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan(process.env.NODE_DEV === "production" ? "combined" : "dev"));
+
+// Request logging middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const requestId = uuidv4();
+  const startTime = Date.now();
+
+  res.on('finish', () => {
+    const duration = Date.now() - startTime;
+    console.log(`[${requestId}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
+  });
+
+  res.locals.requestId = requestId;
+  next();
+});
+
+// Routes
+app.use('/api/health', healthRoutes);
+app.use('/api/boards', boardRoutes);
+app.use('/api/tasks', taskRoutes);
+
+// Root endpoint
+app.get('/api', (req: Request, res: Response<ApiResponse>) => {
+  res.json({
+    success: true,
+    data: {
+      name: APP_NAME,
+      version: APP_VERSION,
+      status: 'running',
+    } as unknown,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// 404 handler
+app.use((req: Request, res: Response<ApiResponse>) => {
+  res.status(404).json({
+    success: false,
+    error: 'Endpoint not found',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response<ApiResponse>, next: NextFunction) => {
+  console.error('Error:', err);
+
+  const isDev = isDevelopment();
+  const message = isDev ? err.message : 'Internal server error';
+
+  res.status(500).json({
+    success: false,
+    error: message,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Start server
+const port = process.env.PORT || 3001;
+const host = process.env.HOST || 'localhost';
+
+app.listen(port, () => {
+  console.log(`\n🚀 ${APP_NAME} API Server`);
+  console.log(`Version: ${APP_VERSION}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Server running at http://${host}:${port}`);
+  console.log(`API Base URL: ${API_BASE_URL}\n`);
+});
+
+export default app;
+</file>
+
+<file path="apps/api/src/routes/boards.ts">
+import { Router, Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  Board,
+  CreateBoardInput,
+  UpdateBoardInput,
+  ApiResponse,
+  PaginatedResponse,
+} from '@kanban/types';
+
+const router = Router();
+
+// In-memory storage (replace with database in production)
+const boards = new Map<string, Board>();
+
+// GET /api/boards - Get all boards
+router.get('/', (req: Request, res: Response<PaginatedResponse<Board>>) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+
+  const allBoards = Array.from(boards.values());
+  const total = allBoards.length;
+  const pages = Math.ceil(total / limit);
+  const start = (page - 1) * limit;
+  const paginatedBoards = allBoards.slice(start, start + limit);
+
+  res.json({
+    success: true,
+    data: paginatedBoards,
+    pagination: { page, limit, total, pages },
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// GET /api/boards/:id - Get single board
+router.get('/:id', (req: Request, res: Response<ApiResponse<Board | null>>) => {
+  const board = boards.get(req.params.id);
+
+  if (!board) {
+    return res.status(404).json({
+      success: false,
+      error: 'Board not found',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  res.json({
+    success: true,
+    data: board,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// POST /api/boards - Create board
+router.post('/', (req: Request, res: Response<ApiResponse<Board>>) => {
+  const { name, description, userId } = req.body as CreateBoardInput;
+
+  if (!name || !userId) {
+    return res.status(400).json({
+      success: false,
+      error: 'name and userId are required',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const board: Board = {
+    id: uuidv4(),
+    name,
+    description,
+    userId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  boards.set(board.id, board);
+
+  res.status(201).json({
+    success: true,
+    data: board,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// PUT /api/boards/:id - Update board
+router.put('/:id', (req: Request, res: Response<ApiResponse<Board | null>>) => {
+  const board = boards.get(req.params.id);
+
+  if (!board) {
+    return res.status(404).json({
+      success: false,
+      error: 'Board not found',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const updates = req.body as UpdateBoardInput;
+  const updatedBoard: Board = {
+    ...board,
+    ...updates,
+    updatedAt: new Date(),
+  };
+
+  boards.set(updatedBoard.id, updatedBoard);
+
+  res.json({
+    success: true,
+    data: updatedBoard,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// DELETE /api/boards/:id - Delete board
+router.delete('/:id', (req: Request, res: Response<ApiResponse<null>>) => {
+  if (!boards.has(req.params.id)) {
+    return res.status(404).json({
+      success: false,
+      error: 'Board not found',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  boards.delete(req.params.id);
+
+  res.json({
+    success: true,
+    data: null,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+export default router;
+</file>
+
+<file path="apps/api/src/routes/health.ts">
+import { Router, Request, Response } from 'express';
+import { ApiResponse } from '@kanban/types';
+
+const router = Router();
+
+interface HealthData {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  timestamp: string;
+  uptime: number;
+}
+
+router.get('/', (req: Request, res: Response<ApiResponse<HealthData>>) => {
+  res.json({
+    success: true,
+    data: {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
+export default router;
+</file>
+
+<file path="apps/api/src/routes/tasks.ts">
+import { Router, Request, Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  Task,
+  TaskStatus,
+  CreateTaskInput,
+  UpdateTaskInput,
+  ApiResponse,
+  PaginatedResponse,
+} from '@kanban/types';
+
+const router = Router();
+
+// In-memory storage (replace with database in production)
+const tasks = new Map<string, Task>();
+
+// GET /api/tasks - Get all tasks (with optional filtering)
+router.get('/', (req: Request, res: Response<PaginatedResponse<Task>>) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  const boardId = req.query.boardId as string;
+  const status = req.query.status as TaskStatus;
+
+  let allTasks = Array.from(tasks.values());
+
+  if (boardId) {
+    allTasks = allTasks.filter((task) => task.boardId === boardId);
+  }
+
+  if (status) {
+    allTasks = allTasks.filter((task) => task.status === status);
+  }
+
+  const total = allTasks.length;
+  const pages = Math.ceil(total / limit);
+  const start = (page - 1) * limit;
+  const paginatedTasks = allTasks.slice(start, start + limit);
+
+  res.json({
+    success: true,
+    data: paginatedTasks,
+    pagination: { page, limit, total, pages },
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// GET /api/tasks/:id - Get single task
+router.get('/:id', (req: Request, res: Response<ApiResponse<Task | null>>) => {
+  const task = tasks.get(req.params.id);
+
+  if (!task) {
+    return res.status(404).json({
+      success: false,
+      error: 'Task not found',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  res.json({
+    success: true,
+    data: task,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// POST /api/tasks - Create task
+router.post('/', (req: Request, res: Response<ApiResponse<Task>>) => {
+  const { title, description, status, boardId } = req.body as CreateTaskInput;
+
+  if (!title || !boardId) {
+    return res.status(400).json({
+      success: false,
+      error: 'title and boardId are required',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const task: Task = {
+    id: uuidv4(),
+    title,
+    description,
+    status: status || TaskStatus.TODO,
+    boardId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  tasks.set(task.id, task);
+
+  res.status(201).json({
+    success: true,
+    data: task,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// PUT /api/tasks/:id - Update task
+router.put('/:id', (req: Request, res: Response<ApiResponse<Task | null>>) => {
+  const task = tasks.get(req.params.id);
+
+  if (!task) {
+    return res.status(404).json({
+      success: false,
+      error: 'Task not found',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const updates = req.body as UpdateTaskInput;
+  const updatedTask: Task = {
+    ...task,
+    ...updates,
+    updatedAt: new Date(),
+  };
+
+  tasks.set(updatedTask.id, updatedTask);
+
+  res.json({
+    success: true,
+    data: updatedTask,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// DELETE /api/tasks/:id - Delete task
+router.delete('/:id', (req: Request, res: Response<ApiResponse<null>>) => {
+  if (!tasks.has(req.params.id)) {
+    return res.status(404).json({
+      success: false,
+      error: 'Task not found',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  tasks.delete(req.params.id);
+
+  res.json({
+    success: true,
+    data: null,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+export default router;
+</file>
+
+<file path="apps/api/tsconfig.json">
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+</file>
+
+<file path="apps/web/.env.example">
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+</file>
+
+<file path="apps/web/next-env.d.ts">
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/building-your-application/configuring/typescript for more information.
+</file>
+
+<file path="apps/web/next.config.js">
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  typescript: {
+    tsconfigPath: './tsconfig.json',
+  },
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
+  },
+};
+
+module.exports = nextConfig;
+</file>
+
+<file path="apps/web/package.json">
+{
+  "name": "@kanban/web",
+  "version": "1.0.0",
+  "description": "Next.js frontend for Kanban application",
+  "private": true,
+  "scripts": {
+    "predev": "pnpm --filter @kanban/types --filter @kanban/utils --filter @kanban/config build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "clean": "rm -rf .next"
+  },
+  "dependencies": {
+    "@kanban/config": "workspace:*",
+    "@kanban/types": "workspace:*",
+    "@kanban/utils": "workspace:*",
+    "@tailwindcss/postcss": "^4.2.2",
+    "next": "^14.0.4",
+    "postcss": "^8.5.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
+</file>
+
+<file path="apps/web/postcss.config.mjs">
+const config = {
+  plugins: {
+    '@tailwindcss/postcss': {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="apps/web/src/app/globals.css">
+@import 'tailwindcss';
+</file>
+
+<file path="apps/web/src/app/layout.tsx">
+import type { Metadata } from 'next';
+import React from 'react';
+import './globals.css';
+
+export const metadata: Metadata = {
+  title: 'Kanban Board',
+  description: 'A professional Kanban board application built with Next.js and TypeScript',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <div id="root">{children}</div>
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="apps/web/src/app/page.tsx">
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Board } from '@kanban/types';
+import { API_BASE_URL } from '@kanban/config';
+
+export default function Home() {
+  const [boards, setBoards] = useState<Board[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/boards`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch boards');
+        }
+        const data = await response.json();
+        setBoards(data.data || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBoards();
+  }, []);
+
+  return (
+    <main style={{ padding: '2rem' }}>
+      <h1>📊 Kanban Board</h1>
+
+      {error && <div style={{ color: 'red', marginBottom: '1rem' }}>Error: {error}</div>}
+
+      {loading ? (
+        <p>Loading boards...</p>
+      ) : boards.length === 0 ? (
+        <p>No boards created yet. Start by creating a new board!</p>
+      ) : (
+        <div>
+          <h2>Your Boards</h2>
+          <ul>
+            {boards.map((board) => (
+              <li key={board.id}>
+                <strong>{board.name}</strong>
+                {board.description && <p>{board.description}</p>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </main>
+  );
+}
+</file>
+
+<file path="apps/web/src/app/signup/page.tsx">
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import { Input } from '../../components/ui/Input';
+
+export default function SignUp() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#f7f9fc] font-sans p-4">
+      <div className="bg-white p-10 rounded-[8px] shadow-[0_4px_12px_rgba(0,0,0,0.05)] w-full max-w-[400px] text-center">
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-500 rounded-lg mb-6">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+            />
+          </svg>
+        </div>
+
+        <h1 className="m-0 text-2xl font-bold text-gray-900">Create your account</h1>
+        <p className="mt-2 mb-6 text-sm text-gray-500">Start organizing your projects today</p>
+
+        <button className="flex items-center justify-center gap-2 w-full p-2.5 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 cursor-pointer mb-6 hover:bg-gray-50 transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              fill="#4285F4"
+            />
+            <path
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              fill="#34A853"
+            />
+            <path
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              fill="#FBBC05"
+            />
+            <path
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              fill="#EA4335"
+            />
+          </svg>
+          Sign up with Google
+        </button>
+
+        <div className="flex items-center text-center mb-6 before:content-[''] before:flex-1 before:border-b before:border-gray-200 after:content-[''] after:flex-1 after:border-b after:border-gray-200">
+          <span className="px-3 text-xs text-gray-400 uppercase font-medium tracking-wide">
+            OR CONTINUE WITH EMAIL
+          </span>
+        </div>
+
+        <form className="text-left">
+          <Input label="Full Name" type="text" id="fullName" placeholder="John Doe" />
+
+          <Input label="Email Address" type="email" id="email" placeholder="name@company.com" />
+
+          <Input
+            label="Password"
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            hint="Must be at least 8 characters long"
+          />
+
+          <button
+            type="submit"
+            className="w-full p-2.5 bg-blue-600 text-white border-none rounded-md text-sm font-semibold cursor-pointer mt-4 mb-6 hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            Create Account
+          </button>
+        </form>
+
+        <p className="text-[13px] text-gray-500 m-0">
+          Already have an account?{' '}
+          <Link href="/login" className="text-blue-600 font-medium no-underline hover:underline">
+            Log in
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="apps/web/src/components/ui/Input.tsx">
+'use client';
+
+import React, { InputHTMLAttributes, forwardRef, useState } from 'react';
+
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  hint?: string;
+}
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ label, hint, id, className = '', type, ...props }, ref) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const isPassword = type === 'password';
+    const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
+    return (
+      <div className="mb-4">
+        {label && (
+          <label htmlFor={id} className="block text-[13px] font-medium text-gray-700 mb-1.5">
+            {label}
+          </label>
+        )}
+        <div className="relative">
+          <input
+            ref={ref}
+            id={id}
+            type={inputType}
+            className={`w-full p-2.5 ${isPassword ? 'pr-10 ' : ''}border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors ${className}`}
+            {...props}
+          />
+          {isPassword && (
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none flex items-center justify-center p-1"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              )}
+            </button>
+          )}
+        </div>
+        {hint && <span className="block text-xs text-gray-400 mt-2">{hint}</span>}
+      </div>
+    );
+  }
+);
+
+Input.displayName = 'Input';
+</file>
+
+<file path="apps/web/src/lib/api-client.ts">
+import { ApiResponse } from '@kanban/types';
+import { API_BASE_URL } from '@kanban/config';
+
+interface FetchOptions extends RequestInit {
+  searchParams?: Record<string, string | number | boolean>;
+}
+
+export class ApiClient {
+  private baseUrl: string;
+
+  constructor(baseUrl = API_BASE_URL) {
+    this.baseUrl = baseUrl;
+  }
+
+  private buildUrl(path: string, searchParams?: Record<string, string | number | boolean>): string {
+    const url = new URL(`${this.baseUrl}${path}`);
+
+    if (searchParams) {
+      Object.entries(searchParams).forEach(([key, value]) => {
+        url.searchParams.append(key, String(value));
+      });
+    }
+
+    return url.toString();
+  }
+
+  async get<T = unknown>(path: string, options?: FetchOptions): Promise<ApiResponse<T>> {
+    const url = this.buildUrl(path, options?.searchParams);
+    const response = await fetch(url, {
+      ...options,
+      method: 'GET',
+    });
+
+    return this.handleResponse(response);
+  }
+
+  async post<T = unknown>(
+    path: string,
+    data?: unknown,
+    options?: FetchOptions
+  ): Promise<ApiResponse<T>> {
+    const url = this.buildUrl(path);
+    const response = await fetch(url, {
+      ...options,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    return this.handleResponse(response);
+  }
+
+  async put<T = unknown>(
+    path: string,
+    data?: unknown,
+    options?: FetchOptions
+  ): Promise<ApiResponse<T>> {
+    const url = this.buildUrl(path);
+    const response = await fetch(url, {
+      ...options,
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    return this.handleResponse(response);
+  }
+
+  async delete<T = unknown>(path: string, options?: FetchOptions): Promise<ApiResponse<T>> {
+    const url = this.buildUrl(path);
+    const response = await fetch(url, {
+      ...options,
+      method: 'DELETE',
+    });
+
+    return this.handleResponse(response);
+  }
+
+  private async handleResponse(response: Response): Promise<ApiResponse> {
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'API request failed');
+    }
+
+    return data;
+  }
+}
+
+export const apiClient = new ApiClient();
+</file>
+
+<file path="apps/web/tsconfig.json">
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "jsx": "preserve",
+    "jsxImportSource": "react",
+    "types": [
+      "node",
+      "jest",
+      "@testing-library/jest-dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@types/*": [
+        "./src/types/*"
+      ]
+    },
+    "noEmit": true,
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "isolatedModules": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+</file>
+
+<file path="docker-compose.yml">
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api-runtime
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      HOST: 0.0.0.0
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+    command: pnpm --filter @kanban/api dev
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web-runtime
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+    depends_on:
+      - api
+    command: pnpm --filter @kanban/web dev
+</file>
+
+<file path="Dockerfile">
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy workspace files
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+
+# Copy packages and apps
+COPY packages ./packages
+COPY apps ./apps
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Build all packages and apps
+RUN pnpm build
+
+# Runtime stage for API
+FROM node:20-alpine AS api-runtime
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY packages ./packages
+COPY apps/api ./apps/api
+
+RUN pnpm install --frozen-lockfile --prod
+
+EXPOSE 3001
+
+CMD ["node", "apps/api/dist/index.js"]
+
+# Runtime stage for Web
+FROM node:20-alpine AS web-runtime
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY packages ./packages
+COPY apps/web ./apps/web
+
+RUN pnpm install --frozen-lockfile --prod
+RUN pnpm --filter @kanban/web build
+
+EXPOSE 3000
+
+CMD ["pnpm", "--filter", "@kanban/web", "start"]
+</file>
+
+<file path="docs/API.md">
+# API Documentation
+
+## Base URL
+
+```
+http://localhost:3001/api
+```
+
+## Endpoints
+
+### Health Check
+
+#### GET `/health`
+
+Check API health status.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "uptime": 1234.56
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+---
+
+### Boards
+
+#### GET `/boards`
+
+Get all boards with pagination.
+
+**Query Parameters:**
+- `page` (number, default: 1) - Page number
+- `limit` (number, default: 20) - Items per page
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "My Project",
+      "description": "A great project",
+      "userId": "user-123",
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 42,
+    "pages": 3
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### GET `/boards/:id`
+
+Get a specific board.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "My Project",
+    "description": "A great project",
+    "userId": "user-123",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### POST `/boards`
+
+Create a new board.
+
+**Request Body:**
+```json
+{
+  "name": "My Project",
+  "description": "A great project",
+  "userId": "user-123"
+}
+```
+
+**Response:** (201 Created)
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "My Project",
+    "description": "A great project",
+    "userId": "user-123",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### PUT `/boards/:id`
+
+Update a board.
+
+**Request Body:**
+```json
+{
+  "name": "Updated Project",
+  "description": "Updated description"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Updated Project",
+    "description": "Updated description",
+    "userId": "user-123",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### DELETE `/boards/:id`
+
+Delete a board.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": null,
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+---
+
+### Tasks
+
+#### GET `/tasks`
+
+Get all tasks with optional filtering.
+
+**Query Parameters:**
+- `page` (number, default: 1) - Page number
+- `limit` (number, default: 20) - Items per page
+- `boardId` (string, optional) - Filter by board ID
+- `status` (string, optional) - Filter by status (TODO, IN_PROGRESS, DONE)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "title": "Implement feature",
+      "description": "Description of the task",
+      "status": "TODO",
+      "boardId": "550e8400-e29b-41d4-a716-446655440000",
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "pages": 5
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### GET `/tasks/:id`
+
+Get a specific task.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "Implement feature",
+    "description": "Description of the task",
+    "status": "TODO",
+    "boardId": "550e8400-e29b-41d4-a716-446655440000",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### POST `/tasks`
+
+Create a new task.
+
+**Request Body:**
+```json
+{
+  "title": "Implement feature",
+  "description": "Description of the task",
+  "status": "TODO",
+  "boardId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+**Response:** (201 Created)
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "Implement feature",
+    "description": "Description of the task",
+    "status": "TODO",
+    "boardId": "550e8400-e29b-41d4-a716-446655440000",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### PUT `/tasks/:id`
+
+Update a task.
+
+**Request Body:**
+```json
+{
+  "status": "IN_PROGRESS",
+  "description": "Updated description"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "Implement feature",
+    "description": "Updated description",
+    "status": "IN_PROGRESS",
+    "boardId": "550e8400-e29b-41d4-a716-446655440000",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### DELETE `/tasks/:id`
+
+Delete a task.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": null,
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+---
+
+## Error Handling
+
+All errors follow a consistent format:
+
+```json
+{
+  "success": false,
+  "error": "Error message describing what went wrong",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+### HTTP Status Codes
+
+- `200` - OK
+- `201` - Created
+- `400` - Bad Request (validation error)
+- `404` - Not Found
+- `500` - Internal Server Error
+
+## Common Response Headers
+
+```
+Content-Type: application/json
+Access-Control-Allow-Origin: *
+```
+
+## Rate Limiting
+
+Currently not implemented. Will be added in future versions.
+
+## Authentication
+
+Authentication will be implemented in future versions using JWT tokens.
+</file>
+
+<file path="docs/ARCHITECTURE.md">
+# Architecture Overview
+
+This document provides a high-level overview of the Kanban monorepo architecture.
+
+## 🏗️ Monorepo Architecture
+
+This is a **pnpm workspace monorepo** with a clear separation of concerns:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                   Kanban Monorepo                       │
+├─────────────────────────────────────────────────────────┤
+│  apps/                                                  │
+│  ├── web (Next.js 14+ with App Router)                 │
+│  │   └── Consumes: @kanban/{types, utils, config}      │
+│  └── api (Express REST API)                            │
+│      └── Provides: @kanban/{types, utils, config}      │
+├─────────────────────────────────────────────────────────┤
+│  packages/ (Shared)                                     │
+│  ├── types (TypeScript type definitions)               │
+│  ├── utils (Utility functions)                         │
+│  └── config (Constants & configuration)                │
+├─────────────────────────────────────────────────────────┤
+│  Configuration Files                                    │
+│  ├── pnpm-workspace.yaml (workspace definition)        │
+│  ├── tsconfig.json (base TS config)                    │
+│  ├── package.json (root scripts & dependencies)        │
+│  └── .eslintrc.json (code quality)                     │
+├─────────────────────────────────────────────────────────┤
+│  Documentation & Deployment                             │
+│  ├── README.md (project overview)                      │
+│  ├── docs/ (API, development, deployment guides)       │
+│  ├── Dockerfile (containerization)                     │
+│  └── .github/workflows/ (CI/CD)                        │
+└─────────────────────────────────────────────────────────┘
+```
+
+## 📦 Package Organization
+
+### `apps/api` - Express REST API
+
+**Purpose**: Provides REST endpoints for board and task management
+
+**Key Files**:
+- `src/index.ts` - Server entry point, middleware setup
+- `src/routes/boards.ts` - Board CRUD operations
+- `src/routes/tasks.ts` - Task CRUD with filtering
+- `src/routes/health.ts` - Health check endpoint
+- `package.json` - Dependencies: express, cors, uuid
+- `tsconfig.json` - Compiled to ./dist
+
+**API Structure**:
+```
+GET    /api/health                    - Health check
+GET    /api/boards?page=1&limit=20   - List boards (paginated)
+GET    /api/boards/:id                - Get single board
+POST   /api/boards                    - Create board
+PUT    /api/boards/:id                - Update board
+DELETE /api/boards/:id                - Delete board
+
+GET    /api/tasks?boardId=x&status=y - List tasks (paginated + filtered)
+GET    /api/tasks/:id                 - Get single task
+POST   /api/tasks                     - Create task
+PUT    /api/tasks/:id                 - Update task
+DELETE /api/tasks/:id                 - Delete task
+```
+
+### `apps/web` - Next.js Frontend
+
+**Purpose**: Server and client-side rendered UI built with Next.js
+
+**Key Files**:
+- `src/app/layout.tsx` - Root layout (App Router)
+- `src/app/page.tsx` - Home page with board listing
+- `src/lib/api-client.ts` - Type-safe API client wrapper
+- `next.config.js` - Next.js configuration
+- `tsconfig.json` - Extended with path aliases (@/*, @components/*, etc.)
+
+**Key Features**:
+- App Router with server/client components
+- Type-safe API integration
+- Environment-based API URL configuration
+- Responsive component structure ready for expansion
+
+### `packages/types` - Shared Types
+
+**Purpose**: Single source of truth for all TypeScript types
+
+**Exports**:
+- `index.ts` - Common response/pagination types
+- `api/index.ts` - API-specific types (Success/Error responses)
+- `domain/index.ts` - Domain entities (Board, Task, User, TaskStatus enum)
+
+**Type Philosophy**: All types exported and shared to prevent duplication and ensure consistency.
+
+### `packages/utils` - Shared Utilities
+
+**Purpose**: Reusable utility functions
+
+**Categories**:
+- **Validation** (`validation/index.ts`):
+  - Email, URL, UUID validation
+  - Type guards (isEmpty, isNonEmpty)
+  - Pagination parameter validation
+
+- **Formatting** (`formatting/index.ts`):
+  - Date/time formatting (Intl API)
+  - File size formatting
+  - String case conversion (kebab, PascalCase)
+
+- **Helpers** (`index.ts`):
+  - Environment variable management
+  - Development/production detection
+  - Delay/timer utilities
+
+### `packages/config` - Shared Configuration
+
+**Purpose**: Centralized constants and configuration
+
+**Exports**:
+- App metadata (APP_NAME, APP_VERSION)
+- API configuration (API_BASE_URL, timeout)
+- Pagination defaults
+- HTTP status codes
+- Error messages
+- Validation rules (password length, max sizes)
+
+## 🔗 Workspace Dependencies
+
+All internal dependencies use the **workspace protocol**:
+
+```json
+{
+  "dependencies": {
+    "@kanban/config": "workspace:*",
+    "@kanban/types": "workspace:*",
+    "@kanban/utils": "workspace:*"
+  }
+}
+```
+
+This ensures:
+- Instant local resolution (no npm registry lookup)
+- Automatic version alignment
+- No circular dependencies possible
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Language | TypeScript | ^5.3.3 |
+| Package Manager | pnpm | ^9.0.0 |
+| Frontend Framework | Next.js | ^14.0.4 |
+| Frontend Library | React | ^18.2.0 |
+| Backend Framework | Express | ^4.18.2 |
+| Runtime | Node.js | >=18.17.0 |
+| HTTP Client | Fetch API | Native |
+| Code Quality | ESLint | ^8.56.0 |
+| Formatting | Prettier | (via settings) |
+| Container | Docker | Any version |
+| Orchestration | Docker Compose | ^3.8 |
+
+## 📊 Data Models
+
+### Board
+```typescript
+{
+  id: string (UUID)
+  name: string
+  description: string
+  userId: string
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### Task
+```typescript
+{
+  id: string (UUID)
+  title: string
+  description: string
+  status: "TODO" | "IN_PROGRESS" | "DONE"
+  boardId: string (reference)
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### API Response Pattern
+```typescript
+{
+  success: boolean
+  data?: T
+  error?: string
+  pagination?: { page, limit, total, pages }
+  timestamp: ISO string
+}
+```
+
+## 🔄 Communication Flow
+
+```
+┌─────────────────┐
+│ Next.js Browser │
+└────────┬────────┘
+         │ fetch with @kanban/types
+         │ using ApiClient
+         │ (api-client.ts)
+         │
+         ▼
+┌────────────────────────────────────────┐
+│   Express API Server                   │
+│ (localhost:3001)                       │
+│                                        │
+│ ├── Validates with @kanban/types      │
+│ ├── Uses @kanban/utils for business   │
+│ ├── Returns typed responses            │
+│ └── Logs with request IDs              │
+└────────────────────────────────────────┘
+         │
+         └──► In-memory storage
+              (Ready for DB integration)
+```
+
+## 🚀 Development Commands
+
+### Setup & Running
+```bash
+pnpm install                    # Install all dependencies
+pnpm dev                        # Start web + api in parallel
+pnpm dev:web                    # Frontend only (port 3000)
+pnpm dev:api                    # Backend only (port 3001)
+```
+
+### Verification & Building
+```bash
+pnpm typecheck                  # Type check all packages
+pnpm lint                       # Lint all code
+pnpm build                      # Build for production
+pnpm test                       # Run all tests
+```
+
+### Filtered Operations
+```bash
+pnpm --filter @kanban/api dev
+pnpm --filter @kanban/web build
+pnpm --filter @kanban/types typecheck
+```
+
+## 🐳 Docker Architecture
+
+The monorepo includes a multi-stage Dockerfile with two runtime targets:
+
+**Build Stage**:
+- Installs dependencies
+- Builds all packages and applications
+
+**API Runtime**:
+- Minimal Node image
+- Production dependencies only
+- Exposes port 3001
+
+**Web Runtime**:
+- Minimal Node image
+- Optimized Next.js build
+- Exposes port 3000
+
+**Docker Compose** provides local development with:
+- Auto-reload on file changes
+- Volume mounts for source code
+- Service linking
+- Environment configuration
+
+## 📁 File Organization Patterns
+
+### Package Structure (consistent across all packages)
+```
+package/
+├── src/              # Source code
+│   ├── index.ts      # Main export
+│   └── subfolder/    # Organized code
+├── dist/             # Compiled output (gitignored)
+├── package.json      # Package metadata & scripts
+├── tsconfig.json     # TS configuration
+└── README.md         # Package documentation
+```
+
+### App Structure (Frontend & Backend)
+```
+app/
+├── src/              # Source code
+│   ├── routes/       # API routes (backend)
+│   ├── components/   # React components (frontend)
+│   ├── lib/          # Utilities & helpers
+│   ├── types/        # Local type overrides
+│   └── index.ts      # Entry point
+├── public/           # Static assets (frontend only)
+├── dist/             # Compiled output (gitignored)
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## 🔐 TypeScript Configuration Strategy
+
+**Root `tsconfig.json`**: Base settings
+- ES2020 target
+- Strict mode enabled
+- Module resolution: bundler
+- Source maps enabled
+
+**Each Package Extends Root** and specifies:
+- `outDir`: ./dist
+- `rootDir`: ./src
+- Package-specific compiler options
+
+**Benefits**:
+- Single source of truth for typing rules
+- Consistent across all packages
+- Easy to update globally
+- Type checking in CI/CD
+
+## 🌐 Environment Management
+
+Each app has `.env.example` template:
+
+**API** (.env):
+```
+NODE_ENV=development
+PORT=3001
+HOST=localhost
+```
+
+**Frontend** (.env.local):
+```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+```
+
+Production deployments receive secrets via:
+- Environment variables
+- CI/CD secrets management
+- Cloud provider secret managers
+
+## 🔍 Code Quality
+
+**ESLint Configuration**:
+- Base ESLint recommended rules
+- TypeScript plugin support
+- Next.js specific rules for frontend
+
+**Prettier Configuration**:
+- 100 character line length
+- Single quotes
+- Trailing commas (ES5)
+- 2-space indentation
+
+**Pre-commit Recommendations** (not yet configured):
+- Type checking
+- Linting
+- Tests (via husky + lint-staged)
+
+## 📚 Documentation Structure
+
+- **README.md** - Project overview and quick start
+- **docs/API.md** - Detailed endpoint documentation
+- **docs/DEVELOPMENT.md** - Developer setup and workflows
+- **docs/DEPLOYMENT.md** - Production deployment strategies
+- **docs/ARCHITECTURE.md** - This file
+
+## 🎯 Design Principles
+
+1. **Type Safety First** - All code is strictly typed
+2. **Monorepo Benefits** - Shared code without duplication
+3. **Separation of Concerns** - Clear layers (UI, API, types, utils)
+4. **Developer Experience** - Fast builds, clear structure, good tooling
+5. **Production Ready** - Includes Docker, CI/CD, documentation
+6. **Scalable** - Easy to add new packages/apps and services
+
+## 🔮 Future Enhancements
+
+Recommended next steps:
+1. Add database layer (PostgreSQL with ORM)
+2. Implement authentication (JWT + sessions)
+3. Add real-time features (WebSockets)
+4. Setup comprehensive testing (Jest + React Testing Library)
+5. Add monitoring and logging (Sentry, Datadog)
+6. Implement caching (Redis)
+7. Setup feature flags
+8. Add rate limiting
+9. Implement file uploads
+10. Add email notifications
+
+---
+
+This architecture provides a solid foundation for scaling a professional full-stack application while maintaining code quality and developer experience.
+</file>
+
+<file path="docs/DEPLOYMENT.md">
+# Deployment Guide
+
+This guide covers deploying the Kanban application to various environments.
+
+## Table of Contents
+
+- [Build Requirements](#build-requirements)
+- [Docker Deployment](#docker-deployment)
+- [Frontend Deployment](#frontend-deployment)
+- [Backend Deployment](#backend-deployment)
+- [Environment Variables](#environment-variables)
+- [Database Integration](#database-integration)
+
+## Build Requirements
+
+Before deploying, ensure all builds pass locally:
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm build
+```
+
+## Docker Deployment
+
+### Build Docker Images
+
+**Build both services:**
+```bash
+docker-compose build
+```
+
+**Build specific service:**
+```bash
+docker build --target api-runtime -t kanban-api .
+docker build --target web-runtime -t kanban-web .
+```
+
+### Run with Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+Access:
+- Frontend: http://localhost:3000
+- API: http://localhost:3001
+
+### Stop Services
+
+```bash
+docker-compose down
+```
+
+## Frontend Deployment
+
+### Vercel (Recommended)
+
+1. **Connect Repository:**
+   - Go to [Vercel Dashboard](https://vercel.com)
+   - Import your repository
+   - Select `apps/web` as root directory
+
+2. **Environment Variables:**
+   ```
+   NEXT_PUBLIC_API_BASE_URL=https://api.example.com
+   ```
+
+3. **Deploy:**
+   - Automatic deploys on push to main
+
+### Netlify
+
+1. **Install Netlify CLI:**
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. **Configure:**
+   ```bash
+   netlify init
+   ```
+
+3. **Build Command:**
+   ```
+   pnpm build && pnpm --filter @kanban/web build
+   ```
+
+4. **Publish Directory:**
+   ```
+   apps/web/.next
+   ```
+
+### Self-Hosted (Node.js)
+
+1. **Build:**
+   ```bash
+   pnpm --filter @kanban/web build
+   ```
+
+2. **Run:**
+   ```bash
+   pnpm --filter @kanban/web start
+   ```
+
+3. **Systemd Service (Linux):**
+   ```ini
+   [Unit]
+   Description=Kanban Web
+   After=network.target
+
+   [Service]
+   Type=simple
+   User=www-data
+   WorkingDirectory=/path/to/kanban-monorepo
+   ExecStart=/usr/bin/pnpm --filter @kanban/web start
+   Restart=on-failure
+   Environment="NODE_ENV=production"
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+## Backend Deployment
+
+### Railway.app
+
+1. **Connect Repository:**
+   - Go to [Railway](https://railway.app)
+   - Create new project
+   - Connect GitHub repository
+
+2. **Configure Service:**
+   - Select root directory
+   - Set `PORT=3001`
+   - Environment: Production
+
+3. **Build Command:**
+   ```
+   pnpm build
+   ```
+
+4. **Start Command:**
+   ```
+   node apps/api/dist/index.js
+   ```
+
+### Heroku
+
+1. **Install Heroku CLI:**
+   ```bash
+   npm install -g heroku
+   ```
+
+2. **Login:**
+   ```bash
+   heroku login
+   ```
+
+3. **Create App:**
+   ```bash
+   heroku create kanban-api
+   ```
+
+4. **Set Buildpack:**
+   ```bash
+   heroku buildpacks:add --index 1 heroku/nodejs
+   ```
+
+5. **Deploy:**
+   ```bash
+   git push heroku main
+   ```
+
+### AWS EC2
+
+1. **Create Instance:**
+   - Ubuntu 22.04 LTS
+   - Security group allowing ports 22, 3001
+
+2. **Install Dependencies:**
+   ```bash
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+   nvm install 20
+   npm install -g pnpm
+   ```
+
+3. **Clone and Install:**
+   ```bash
+   git clone <repo>
+   cd kanban-monorepo
+   pnpm install
+   pnpm build
+   ```
+
+4. **Run Service:**
+   ```bash
+   NODE_ENV=production node apps/api/dist/index.js
+   ```
+
+### Google Cloud Run
+
+1. **Build and Push Image:**
+   ```bash
+   gcloud builds submit --tag gcr.io/PROJECT_ID/kanban-api .
+   ```
+
+2. **Deploy:**
+   ```bash
+   gcloud run deploy kanban-api \
+     --image gcr.io/PROJECT_ID/kanban-api \
+     --platform managed \
+     --region us-central1 \
+     --port 3001 \
+     --set-env-vars NODE_ENV=production
+   ```
+
+### Azure Container Instances
+
+1. **Build Image:**
+   ```bash
+   az acr build --registry myregistry --image kanban-api:latest .
+   ```
+
+2. **Deploy:**
+   ```bash
+   az container create \
+     --resource-group mygroup \
+     --name kanban-api \
+     --image myregistry.azurecr.io/kanban-api:latest \
+     --port 3001
+   ```
+
+## Environment Variables
+
+### API Environment Variables
+
+**Production (.env):**
+```env
+NODE_ENV=production
+PORT=3001
+HOST=0.0.0.0
+DATABASE_URL=postgresql://user:password@host/db
+JWT_SECRET=your-secret-key
+CORS_ORIGIN=https://app.example.com
+```
+
+### Frontend Environment Variables
+
+**Production (.env.production):**
+```env
+NEXT_PUBLIC_API_BASE_URL=https://api.example.com
+```
+
+**Development (.env.local):**
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+```
+
+## Database Integration
+
+### PostgreSQL Setup
+
+1. **Install PostgreSQL Locally:**
+   ```bash
+   brew install postgresql  # macOS
+   apt-get install postgresql  # Linux
+   ```
+
+2. **Create Database:**
+   ```bash
+   createdb kanban_dev
+   ```
+
+3. **Update API Configuration:**
+   - Install database client: `pnpm --filter @kanban/api add pg`
+   - Update connection string in `.env`
+
+### Environment-Specific Configs
+
+**Development:**
+- SQLite or local PostgreSQL
+- Detailed logging
+- Hot reload enabled
+
+**Staging:**
+- Managed PostgreSQL database
+- Basic logging
+- Performance monitoring
+
+**Production:**
+- Managed database with backups
+- Minimal logging (errors only)
+- APM/monitoring enabled
+- Connection pooling enabled
+
+## Health Checks
+
+### API Health Endpoint
+
+```bash
+curl https://api.example.com/api/health
+```
+
+Expected response:
+```json
+{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "uptime": 12345.67
+  }
+}
+```
+
+### Monitoring
+
+Set up monitoring for:
+- API response times
+- Error rates
+- CPU/Memory usage
+- Database connections
+
+## Scaling Considerations
+
+1. **Load Balancing:**
+   - Use nginx/HAProxy in front of multiple API instances
+   - CDN for static frontend assets
+
+2. **Caching:**
+   - Implement Redis for session/data caching
+   - Frontend static export for certain pages
+
+3. **Database:**
+   - Use read replicas for queries
+   - Implement database connection pooling
+
+4. **API Optimization:**
+   - Implement pagination (already done)
+   - Add response caching headers
+   - Use compression middleware
+
+## CI/CD Pipeline
+
+The monorepo includes a GitHub Actions workflow (`.github/workflows/ci.yml`) that:
+
+1. Tests on Node 18 and 20
+2. Type checks code
+3. Runs linter
+4. Builds all packages
+5. Runs test suite
+
+Add deployment step to `.github/workflows/ci.yml` for continuous deployment:
+
+```yaml
+- name: Deploy to Production
+  if: github.ref == 'refs/heads/main'
+  run: |
+    # Your deployment script here
+```
+
+## Rollback Procedures
+
+### Vercel
+- Automatic rollback available in dashboard
+
+### Docker
+```bash
+# Get previous image
+docker images
+
+# Run previous version
+docker run -p 3001:3001 kanban-api:previous
+```
+
+### Manual Rollback
+```bash
+git revert <commit-hash>
+git push
+# Re-deploy
+```
+
+## Performance Optimization
+
+1. **Frontend:**
+   - Enable Static Generation for pages
+   - Image optimization via Next.js
+   - Code splitting
+
+2. **Backend:**
+   - Connection pooling
+   - Database indexing
+   - Response compression
+
+3. **Network:**
+   - CDN for assets
+   - API response caching
+   - Gzip compression
+
+## Security Checklist
+
+- [ ] Environment variables secured (never in code)
+- [ ] HTTPS enabled on all endpoints
+- [ ] CORS properly configured
+- [ ] Input validation on all endpoints
+- [ ] Rate limiting implemented
+- [ ] Database connection encrypted
+- [ ] Secrets managed via secure vaults
+- [ ] Regular dependency updates
+
+---
+
+For more details on specific platforms, refer to their official documentation.
+</file>
+
+<file path="docs/DEVELOPMENT.md">
+# Development Guide
+
+This guide provides instructions for setting up and developing in the Kanban monorepo.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Initial Setup](#initial-setup)
+- [Project Structure](#project-structure)
+- [Development Workflow](#development-workflow)
+- [Code Standards](#code-standards)
+- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
+
+## Prerequisites
+
+- Node.js 18.17.0 or higher
+- pnpm 9.0.0 or higher
+- Git
+- Your preferred code editor (VS Code recommended)
+
+## Initial Setup
+
+### 1. Clone and Navigate
+
+```bash
+git clone <repository-url>
+cd kanban-monorepo
+```
+
+### 2. Install pnpm (if not already installed)
+
+```bash
+npm install -g pnpm
+```
+
+### 3. Install Dependencies
+
+```bash
+pnpm install
+```
+
+This will install dependencies for all packages and applications in the monorepo.
+
+### 4. Copy Environment Files
+
+```bash
+cp apps/api/.env.example apps/api/.env.local
+cp apps/web/.env.example apps/web/.env.local
+```
+
+### 5. Verify Setup
+
+```bash
+pnpm typecheck
+```
+
+## Project Structure
+
+```
+kanban-monorepo/
+├── apps/
+│   ├── api/         # Express backend
+│   └── web/         # Next.js frontend
+├── packages/
+│   ├── types/       # Shared types
+│   ├── utils/       # Shared utilities
+│   └── config/      # Shared config
+├── docs/            # Documentation
+└── ...config files
+```
+
+## Development Workflow
+
+### Running All Services
+
+Start both frontend and backend in development mode:
+
+```bash
+pnpm dev
+```
+
+Both services will be available at:
+- Frontend: http://localhost:3000
+- API: http://localhost:3001
+
+### Running Individual Services
+
+**Frontend only:**
+```bash
+pnpm dev:web
+```
+
+**Backend only:**
+```bash
+pnpm dev:api
+```
+
+### Building
+
+Build all packages and applications:
+
+```bash
+pnpm build
+```
+
+Build a specific application:
+
+```bash
+pnpm --filter @kanban/api build
+pnpm --filter @kanban/web build
+```
+
+### Type Checking
+
+Check TypeScript types across all packages:
+
+```bash
+pnpm typecheck
+```
+
+### Linting
+
+Run ESLint across all packages:
+
+```bash
+pnpm lint
+```
+
+### Testing
+
+Run all tests:
+
+```bash
+pnpm test
+```
+
+## Code Standards
+
+### TypeScript Conventions
+
+1. **Strict Mode**: All code uses TypeScript strict mode
+2. **Names**: Use PascalCase for types/interfaces, camelCase for variables/functions
+3. **Exports**: Use named exports in utilities, default exports for app components
+
+### File Organization
+
+- `src/` - Source code
+- `dist/` - Compiled output (gitignored)
+- `tests/` - Test files
+
+### Naming Conventions
+
+- **Types**: `User`, `Task`, `Board`, `ApiResponse<T>`
+- **Functions**: `fetchUsers()`, `formatDate()`
+- **Variables**: `userName`, `isLoading`
+- **Constants**: `MAX_ITEMS_PER_PAGE`, `API_BASE_URL`
+
+### Imports
+
+Always use absolute imports with workspace names:
+
+```typescript
+// ✅ Good
+import { Task } from '@kanban/types';
+import { formatDate } from '@kanban/utils';
+
+// ❌ Avoid
+import { Task } from '../../packages/types/src';
+```
+
+## Testing
+
+### Writing Tests
+
+Create test files alongside source files with `.test.ts` or `.test.tsx` suffix:
+
+```
+src/
+  lib/
+    api-client.ts
+    api-client.test.ts
+```
+
+### Running Tests
+
+```bash
+# All tests
+pnpm test
+
+# Watch mode
+pnpm test --watch
+
+# Specific package
+pnpm --filter @kanban/api test
+```
+
+## API Development
+
+### Creating New Endpoints
+
+1. Create route file in `apps/api/src/routes/`
+2. Define types in `packages/types/src/`
+3. Export in main `index.ts`
+
+Example:
+
+```typescript
+// apps/api/src/routes/users.ts
+import { Router, Request, Response } from 'express';
+import { User, ApiResponse } from '@kanban/types';
+
+const router = Router();
+
+router.get('/', (req: Request, res: Response<ApiResponse<User[]>>) => {
+  // Implementation
+});
+
+export default router;
+```
+
+### Testing API Endpoints
+
+You can test endpoints using:
+
+**cURL:**
+```bash
+curl http://localhost:3001/api/boards
+```
+
+**Postman:**
+Import the collection from `docs/postman-collection.json`
+
+**REST Client (VS Code):**
+Use `.rest` files in `docs/rest-client/`
+
+## Frontend Development
+
+### Creating Components
+
+1. Create component in `apps/web/src/components/`
+2. Use TypeScript for all components
+3. Export from `components/index.ts`
+
+Example:
+
+```typescript
+// apps/web/src/components/BoardCard.tsx
+import { Board } from '@kanban/types';
+
+interface BoardCardProps {
+  board: Board;
+}
+
+export async function BoardCard({ board }: BoardCardProps) {
+  return <article>{board.name}</article>;
+}
+```
+
+### Using Shared Types
+
+Always import types from `@kanban/types`:
+
+```typescript
+import { Task, TaskStatus } from '@kanban/types';
+```
+
+### API Integration
+
+Use the `ApiClient` from `@lib/api-client`:
+
+```typescript
+import { apiClient } from '@/lib/api-client';
+
+const response = await apiClient.get<Board[]>('/boards');
+```
+
+## Debugging
+
+### VS Code Debugging
+
+Add to `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug API",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@kanban/api", "dev"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
+```
+
+### Console Output
+
+Files use structured logging. APIs and important events log to console with request IDs.
+
+## Common Tasks
+
+### Add New Package
+
+```bash
+mkdir packages/my-package
+cd packages/my-package
+
+# Create package.json, tsconfig.json, src/index.ts
+
+# Add to another package's dependencies:
+pnpm add @kanban/my-package -w --filter @kanban/api
+```
+
+### Update Dependencies
+
+```bash
+# Update all
+pnpm update
+
+# Update specific package
+pnpm update express -w --filter @kanban/api
+
+# Interactive
+pnpm update --interactive
+```
+
+### Clean Everything
+
+```bash
+pnpm clean
+rm -rf node_modules
+pnpm install
+```
+
+## Troubleshooting
+
+### Port Already in Use
+
+If port 3000 or 3001 is already in use:
+
+```bash
+# Find process on port 3001
+lsof -i :3001
+
+# Kill process (macOS/Linux)
+kill -9 <PID>
+
+# Windows
+netstat -ano | findstr :3001
+taskkill /PID <PID> /F
+```
+
+### Module Not Found
+
+Ensure the module is properly exported and installed:
+
+```bash
+# Reinstall dependencies
+pnpm install
+
+# Check if package is in workspace
+pnpm list @kanban/types -w
+```
+
+### Type Errors
+
+Clear TypeScript cache and rebuild:
+
+```bash
+pnpm typecheck
+pnpm build
+```
+
+### pnpm Lock Issues
+
+Reset lock file and reinstall:
+
+```bash
+rm pnpm-lock.yaml
+pnpm install
+```
+
+## Git Workflow
+
+### Branch Naming
+
+- `feature/description` - New features
+- `fix/description` - Bug fixes
+- `docs/description` - Documentation
+- `refactor/description` - Code refactoring
+
+### Commit Messages
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+Example:
+```
+feat(api): add user authentication endpoint
+```
+
+### Before Pushing
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+```
+
+## Performance Tips
+
+1. **Use workspace filtering** for faster operations:
+   ```bash
+   pnpm --filter @kanban/api build
+   ```
+
+2. **Leverage caching** in CI/CD
+
+3. **Monitor build times**:
+   ```bash
+   pnpm build --profile
+   ```
+
+4. **Keep dependencies minimal** - only add what you need
+
+## Resources
+
+- [pnpm Documentation](https://pnpm.io)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Express Documentation](https://expressjs.com/)
+
+## Getting Help
+
+1. Check existing issues in the repository
+2. Review documentation in `docs/`
+3. Ask in team chat/discussion forums
+4. Create a new issue with detailed error information
+
+---
+
+Happy coding! 🚀
+</file>
+
+<file path="package.json">
+{
+  "name": "@kanban/monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack TypeScript Kanban application monorepo",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @kanban/web dev",
+    "dev:api": "pnpm --filter @kanban/api dev",
+    "build": "pnpm -r build",
+    "build:web": "pnpm --filter @kanban/web build",
+    "build:api": "pnpm --filter @kanban/api build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "format": "pnpm -r format",
+    "clean": "pnpm -r clean && rm -rf ./node_modules"
+  },
+  "devDependencies": {
+    "pnpm": "^9.0.0",
+    "repomix": "^1.12.0",
+    "typescript": "^5.3.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "^5.3.3"
+    },
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react",
+        "react-dom"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=18.17.0",
+    "pnpm": ">=9.0.0"
+  }
+}
+</file>
+
+<file path="packages/config/package.json">
+{
+  "name": "@kanban/config",
+  "version": "1.0.0",
+  "description": "Shared configuration for the Kanban monorepo",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3"
+  }
+}
+</file>
+
+<file path="packages/config/src/index.ts">
+// Application-wide constants and configuration
+
+export const APP_NAME = 'Kanban';
+export const APP_VERSION = '1.0.0';
+
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3001';
+export const API_TIMEOUT = 30000; // 30 seconds
+
+export const PAGINATION = {
+  DEFAULT_LIMIT: 20,
+  MAX_LIMIT: 100,
+  DEFAULT_PAGE: 1,
+};
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  INTERNAL_SERVER_ERROR: 500,
+};
+
+export const ERROR_MESSAGES = {
+  INTERNAL_SERVER_ERROR: 'An internal server error occurred',
+  NOT_FOUND: 'Resource not found',
+  UNAUTHORIZED: 'Unauthorized access',
+  VALIDATION_ERROR: 'Validation error',
+  INVALID_REQUEST: 'Invalid request',
+};
+
+export const VALIDATION_RULES = {
+  MIN_PASSWORD_LENGTH: 8,
+  MAX_NAME_LENGTH: 100,
+  MAX_TITLE_LENGTH: 200,
+  MAX_DESCRIPTION_LENGTH: 5000,
+};
+</file>
+
+<file path="packages/config/tsconfig.json">
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+</file>
+
+<file path="packages/config/tsconfig.tsbuildinfo">
+{"fileNames":["../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es5.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.core.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.collection.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.generator.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.iterable.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.proxy.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.reflect.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.symbol.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.array.include.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.arraybuffer.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.date.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.object.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.regexp.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.array.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.object.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.symbol.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.bigint.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.date.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.symbol.wellknown.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.number.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.decorators.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.decorators.legacy.d.ts","./src/index.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/disposable.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/indexable.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/iterators.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/index.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/globals.typedarray.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/buffer.buffer.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/globals.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/abortcontroller.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/domexception.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/events.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/header.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/readable.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/file.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/fetch.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/formdata.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/connector.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/client.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/errors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/dispatcher.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/global-dispatcher.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/global-origin.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/pool-stats.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/handlers.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/balanced-pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-interceptor.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-client.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-errors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/proxy-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/env-http-proxy-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/retry-handler.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/retry-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/api.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/interceptors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/util.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/cookies.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/patch.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/websocket.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/eventsource.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/filereader.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/diagnostics-channel.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/content-type.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/cache.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/index.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/fetch.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/assert.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/assert/strict.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/async_hooks.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/buffer.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/child_process.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/cluster.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/console.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/constants.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/crypto.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dgram.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/diagnostics_channel.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dns.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dns/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/domain.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/events.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/fs.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/fs/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/http.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/http2.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/https.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/inspector.generated.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/module.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/net.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/os.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/path.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/perf_hooks.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/process.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/punycode.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/querystring.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/readline.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/readline/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/repl.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/sea.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/consumers.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/web.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/string_decoder.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/test.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/timers.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/timers/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/tls.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/trace_events.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/tty.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/url.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/util.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/v8.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/vm.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/wasi.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/worker_threads.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/zlib.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/index.d.ts"],"fileIdsList":[[52,95,98],[52,97,98],[98],[52,98,103,131],[52,98,99,104,109,117,128,139],[52,98,99,100,109,117],[52,98],[47,48,49,52,98],[52,98,101,140],[52,98,102,103,110,118],[52,98,103,128,136],[52,98,104,106,109,117],[52,97,98,105],[52,98,106,107],[52,98,108,109],[52,97,98,109],[52,98,109,110,111,128,139],[52,98,109,110,111,124,128,131],[52,98,106,109,112,117,128,139],[52,98,109,110,112,113,117,128,136,139],[52,98,112,114,128,136,139],[50,51,52,53,54,55,56,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145],[52,98,109,115],[52,98,116,139,144],[52,98,106,109,117,128],[52,98,118],[52,98,119],[52,97,98,120],[52,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145],[52,98,122],[52,98,123],[52,98,109,124,125],[52,98,124,126,140,142],[52,98,109,128,129,131],[52,98,130,131],[52,98,128,129],[52,98,131],[52,98,132],[52,95,98,128,133],[52,98,109,134,135],[52,98,134,135],[52,98,103,117,128,136],[52,98,137],[52,98,117,138],[52,98,112,123,139],[52,98,103,140],[52,98,128,141],[52,98,116,142],[52,98,143],[52,93,98],[52,93,98,109,111,120,128,131,139,142,144],[52,98,128,145],[52,65,69,98,139],[52,65,98,128,139],[52,60,98],[52,62,65,98,136,139],[52,98,117,136],[52,98,146],[52,60,98,146],[52,62,65,98,117,139],[52,57,58,61,64,98,109,128,139],[52,65,72,98],[52,57,63,98],[52,65,86,87,98],[52,61,65,98,131,139,146],[52,86,98,146],[52,59,60,98,146],[52,65,98],[52,59,60,61,62,63,64,65,66,67,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,87,88,89,90,91,92,98],[52,65,80,98],[52,65,72,73,98],[52,63,65,73,74,98],[52,64,98],[52,57,60,65,98],[52,65,69,73,74,98],[52,69,98],[52,63,65,68,98,139],[52,57,62,65,72,98],[52,98,128],[52,60,65,86,98,144,146]],"fileInfos":[{"version":"c430d44666289dae81f30fa7b2edebf186ecc91a2d4c71266ea6ae76388792e1","affectsGlobalScope":true,"impliedFormat":1},{"version":"45b7ab580deca34ae9729e97c13cfd999df04416a79116c3bfb483804f85ded4","impliedFormat":1},{"version":"3facaf05f0c5fc569c5649dd359892c98a85557e3e0c847964caeb67076f4d75","impliedFormat":1},{"version":"e44bb8bbac7f10ecc786703fe0a6a4b952189f908707980ba8f3c8975a760962","impliedFormat":1},{"version":"5e1c4c362065a6b95ff952c0eab010f04dcd2c3494e813b493ecfd4fcb9fc0d8","impliedFormat":1},{"version":"68d73b4a11549f9c0b7d352d10e91e5dca8faa3322bfb77b661839c42b1ddec7","impliedFormat":1},{"version":"5efce4fc3c29ea84e8928f97adec086e3dc876365e0982cc8479a07954a3efd4","impliedFormat":1},{"version":"c57796738e7f83dbc4b8e65132f11a377649c00dd3eee333f672b8f0a6bea671","affectsGlobalScope":true,"impliedFormat":1},{"version":"dc2df20b1bcdc8c2d34af4926e2c3ab15ffe1160a63e58b7e09833f616efff44","affectsGlobalScope":true,"impliedFormat":1},{"version":"515d0b7b9bea2e31ea4ec968e9edd2c39d3eebf4a2d5cbd04e88639819ae3b71","affectsGlobalScope":true,"impliedFormat":1},{"version":"0559b1f683ac7505ae451f9a96ce4c3c92bdc71411651ca6ddb0e88baaaad6a3","affectsGlobalScope":true,"impliedFormat":1},{"version":"0dc1e7ceda9b8b9b455c3a2d67b0412feab00bd2f66656cd8850e8831b08b537","affectsGlobalScope":true,"impliedFormat":1},{"version":"ce691fb9e5c64efb9547083e4a34091bcbe5bdb41027e310ebba8f7d96a98671","affectsGlobalScope":true,"impliedFormat":1},{"version":"8d697a2a929a5fcb38b7a65594020fcef05ec1630804a33748829c5ff53640d0","affectsGlobalScope":true,"impliedFormat":1},{"version":"4ff2a353abf8a80ee399af572debb8faab2d33ad38c4b4474cff7f26e7653b8d","affectsGlobalScope":true,"impliedFormat":1},{"version":"fb0f136d372979348d59b3f5020b4cdb81b5504192b1cacff5d1fbba29378aa1","affectsGlobalScope":true,"impliedFormat":1},{"version":"d15bea3d62cbbdb9797079416b8ac375ae99162a7fba5de2c6c505446486ac0a","affectsGlobalScope":true,"impliedFormat":1},{"version":"68d18b664c9d32a7336a70235958b8997ebc1c3b8505f4f1ae2b7e7753b87618","affectsGlobalScope":true,"impliedFormat":1},{"version":"eb3d66c8327153d8fa7dd03f9c58d351107fe824c79e9b56b462935176cdf12a","affectsGlobalScope":true,"impliedFormat":1},{"version":"38f0219c9e23c915ef9790ab1d680440d95419ad264816fa15009a8851e79119","affectsGlobalScope":true,"impliedFormat":1},{"version":"69ab18c3b76cd9b1be3d188eaf8bba06112ebbe2f47f6c322b5105a6fbc45a2e","affectsGlobalScope":true,"impliedFormat":1},{"version":"a680117f487a4d2f30ea46f1b4b7f58bef1480456e18ba53ee85c2746eeca012","affectsGlobalScope":true,"impliedFormat":1},{"version":"2f11ff796926e0832f9ae148008138ad583bd181899ab7dd768a2666700b1893","affectsGlobalScope":true,"impliedFormat":1},{"version":"4de680d5bb41c17f7f68e0419412ca23c98d5749dcaaea1896172f06435891fc","affectsGlobalScope":true,"impliedFormat":1},{"version":"954296b30da6d508a104a3a0b5d96b76495c709785c1d11610908e63481ee667","affectsGlobalScope":true,"impliedFormat":1},{"version":"ac9538681b19688c8eae65811b329d3744af679e0bdfa5d842d0e32524c73e1c","affectsGlobalScope":true,"impliedFormat":1},{"version":"0a969edff4bd52585473d24995c5ef223f6652d6ef46193309b3921d65dd4376","affectsGlobalScope":true,"impliedFormat":1},{"version":"9e9fbd7030c440b33d021da145d3232984c8bb7916f277e8ffd3dc2e3eae2bdb","affectsGlobalScope":true,"impliedFormat":1},{"version":"811ec78f7fefcabbda4bfa93b3eb67d9ae166ef95f9bff989d964061cbf81a0c","affectsGlobalScope":true,"impliedFormat":1},{"version":"717937616a17072082152a2ef351cb51f98802fb4b2fdabd32399843875974ca","affectsGlobalScope":true,"impliedFormat":1},{"version":"d7e7d9b7b50e5f22c915b525acc5a49a7a6584cf8f62d0569e557c5cfc4b2ac2","affectsGlobalScope":true,"impliedFormat":1},{"version":"71c37f4c9543f31dfced6c7840e068c5a5aacb7b89111a4364b1d5276b852557","affectsGlobalScope":true,"impliedFormat":1},{"version":"576711e016cf4f1804676043e6a0a5414252560eb57de9faceee34d79798c850","affectsGlobalScope":true,"impliedFormat":1},{"version":"89c1b1281ba7b8a96efc676b11b264de7a8374c5ea1e6617f11880a13fc56dc6","affectsGlobalScope":true,"impliedFormat":1},{"version":"74f7fa2d027d5b33eb0471c8e82a6c87216223181ec31247c357a3e8e2fddc5b","affectsGlobalScope":true,"impliedFormat":1},{"version":"d6d7ae4d1f1f3772e2a3cde568ed08991a8ae34a080ff1151af28b7f798e22ca","affectsGlobalScope":true,"impliedFormat":1},{"version":"063600664504610fe3e99b717a1223f8b1900087fab0b4cad1496a114744f8df","affectsGlobalScope":true,"impliedFormat":1},{"version":"934019d7e3c81950f9a8426d093458b65d5aff2c7c1511233c0fd5b941e608ab","affectsGlobalScope":true,"impliedFormat":1},{"version":"52ada8e0b6e0482b728070b7639ee42e83a9b1c22d205992756fe020fd9f4a47","affectsGlobalScope":true,"impliedFormat":1},{"version":"3bdefe1bfd4d6dee0e26f928f93ccc128f1b64d5d501ff4a8cf3c6371200e5e6","affectsGlobalScope":true,"impliedFormat":1},{"version":"59fb2c069260b4ba00b5643b907ef5d5341b167e7d1dbf58dfd895658bda2867","affectsGlobalScope":true,"impliedFormat":1},{"version":"639e512c0dfc3fad96a84caad71b8834d66329a1f28dc95e3946c9b58176c73a","affectsGlobalScope":true,"impliedFormat":1},{"version":"368af93f74c9c932edd84c58883e736c9e3d53cec1fe24c0b0ff451f529ceab1","affectsGlobalScope":true,"impliedFormat":1},{"version":"8e7f8264d0fb4c5339605a15daadb037bf238c10b654bb3eee14208f860a32ea","affectsGlobalScope":true,"impliedFormat":1},{"version":"782dec38049b92d4e85c1585fbea5474a219c6984a35b004963b00beb1aab538","affectsGlobalScope":true,"impliedFormat":1},{"version":"a55ee641cab859a1d02bb101209b6bc0c83a97b41dee017da77b76579359e91e","signature":"0c6f269e3866a44e9fe32eea3ff3891921f6365cc0d55a683642295c839944b5"},{"version":"70521b6ab0dcba37539e5303104f29b721bfb2940b2776da4cc818c07e1fefc1","affectsGlobalScope":true,"impliedFormat":1},{"version":"ab41ef1f2cdafb8df48be20cd969d875602483859dc194e9c97c8a576892c052","affectsGlobalScope":true,"impliedFormat":1},{"version":"d153a11543fd884b596587ccd97aebbeed950b26933ee000f94009f1ab142848","affectsGlobalScope":true,"impliedFormat":1},{"version":"21d819c173c0cf7cc3ce57c3276e77fd9a8a01d35a06ad87158781515c9a438a","impliedFormat":1},{"version":"98cffbf06d6bab333473c70a893770dbe990783904002c4f1a960447b4b53dca","affectsGlobalScope":true,"impliedFormat":1},{"version":"ba481bca06f37d3f2c137ce343c7d5937029b2468f8e26111f3c9d9963d6568d","affectsGlobalScope":true,"impliedFormat":1},{"version":"6d9ef24f9a22a88e3e9b3b3d8c40ab1ddb0853f1bfbd5c843c37800138437b61","affectsGlobalScope":true,"impliedFormat":1},{"version":"1db0b7dca579049ca4193d034d835f6bfe73096c73663e5ef9a0b5779939f3d0","affectsGlobalScope":true,"impliedFormat":1},{"version":"9798340ffb0d067d69b1ae5b32faa17ab31b82466a3fc00d8f2f2df0c8554aaa","affectsGlobalScope":true,"impliedFormat":1},{"version":"f26b11d8d8e4b8028f1c7d618b22274c892e4b0ef5b3678a8ccbad85419aef43","affectsGlobalScope":true,"impliedFormat":1},{"version":"5929864ce17fba74232584d90cb721a89b7ad277220627cc97054ba15a98ea8f","impliedFormat":1},{"version":"763fe0f42b3d79b440a9b6e51e9ba3f3f91352469c1e4b3b67bfa4ff6352f3f4","impliedFormat":1},{"version":"25c8056edf4314820382a5fdb4bb7816999acdcb929c8f75e3f39473b87e85bc","impliedFormat":1},{"version":"c464d66b20788266e5353b48dc4aa6bc0dc4a707276df1e7152ab0c9ae21fad8","impliedFormat":1},{"version":"78d0d27c130d35c60b5e5566c9f1e5be77caf39804636bc1a40133919a949f21","impliedFormat":1},{"version":"c6fd2c5a395f2432786c9cb8deb870b9b0e8ff7e22c029954fabdd692bff6195","impliedFormat":1},{"version":"1d6e127068ea8e104a912e42fc0a110e2aa5a66a356a917a163e8cf9a65e4a75","impliedFormat":1},{"version":"5ded6427296cdf3b9542de4471d2aa8d3983671d4cac0f4bf9c637208d1ced43","impliedFormat":1},{"version":"7f182617db458e98fc18dfb272d40aa2fff3a353c44a89b2c0ccb3937709bfb5","impliedFormat":1},{"version":"cadc8aced301244057c4e7e73fbcae534b0f5b12a37b150d80e5a45aa4bebcbd","impliedFormat":1},{"version":"385aab901643aa54e1c36f5ef3107913b10d1b5bb8cbcd933d4263b80a0d7f20","impliedFormat":1},{"version":"9670d44354bab9d9982eca21945686b5c24a3f893db73c0dae0fd74217a4c219","impliedFormat":1},{"version":"0b8a9268adaf4da35e7fa830c8981cfa22adbbe5b3f6f5ab91f6658899e657a7","impliedFormat":1},{"version":"11396ed8a44c02ab9798b7dca436009f866e8dae3c9c25e8c1fbc396880bf1bb","impliedFormat":1},{"version":"ba7bc87d01492633cb5a0e5da8a4a42a1c86270e7b3d2dea5d156828a84e4882","impliedFormat":1},{"version":"4893a895ea92c85345017a04ed427cbd6a1710453338df26881a6019432febdd","impliedFormat":1},{"version":"c21dc52e277bcfc75fac0436ccb75c204f9e1b3fa5e12729670910639f27343e","impliedFormat":1},{"version":"13f6f39e12b1518c6650bbb220c8985999020fe0f21d818e28f512b7771d00f9","impliedFormat":1},{"version":"9b5369969f6e7175740bf51223112ff209f94ba43ecd3bb09eefff9fd675624a","impliedFormat":1},{"version":"4fe9e626e7164748e8769bbf74b538e09607f07ed17c2f20af8d680ee49fc1da","impliedFormat":1},{"version":"24515859bc0b836719105bb6cc3d68255042a9f02a6022b3187948b204946bd2","impliedFormat":1},{"version":"ea0148f897b45a76544ae179784c95af1bd6721b8610af9ffa467a518a086a43","impliedFormat":1},{"version":"24c6a117721e606c9984335f71711877293a9651e44f59f3d21c1ea0856f9cc9","impliedFormat":1},{"version":"dd3273ead9fbde62a72949c97dbec2247ea08e0c6952e701a483d74ef92d6a17","impliedFormat":1},{"version":"405822be75ad3e4d162e07439bac80c6bcc6dbae1929e179cf467ec0b9ee4e2e","impliedFormat":1},{"version":"0db18c6e78ea846316c012478888f33c11ffadab9efd1cc8bcc12daded7a60b6","impliedFormat":1},{"version":"e61be3f894b41b7baa1fbd6a66893f2579bfad01d208b4ff61daef21493ef0a8","impliedFormat":1},{"version":"bd0532fd6556073727d28da0edfd1736417a3f9f394877b6d5ef6ad88fba1d1a","impliedFormat":1},{"version":"89167d696a849fce5ca508032aabfe901c0868f833a8625d5a9c6e861ef935d2","impliedFormat":1},{"version":"615ba88d0128ed16bf83ef8ccbb6aff05c3ee2db1cc0f89ab50a4939bfc1943f","impliedFormat":1},{"version":"a4d551dbf8746780194d550c88f26cf937caf8d56f102969a110cfaed4b06656","impliedFormat":1},{"version":"8bd86b8e8f6a6aa6c49b71e14c4ffe1211a0e97c80f08d2c8cc98838006e4b88","impliedFormat":1},{"version":"317e63deeb21ac07f3992f5b50cdca8338f10acd4fbb7257ebf56735bf52ab00","impliedFormat":1},{"version":"4732aec92b20fb28c5fe9ad99521fb59974289ed1e45aecb282616202184064f","impliedFormat":1},{"version":"2e85db9e6fd73cfa3d7f28e0ab6b55417ea18931423bd47b409a96e4a169e8e6","impliedFormat":1},{"version":"c46e079fe54c76f95c67fb89081b3e399da2c7d109e7dca8e4b58d83e332e605","impliedFormat":1},{"version":"bf67d53d168abc1298888693338cb82854bdb2e69ef83f8a0092093c2d562107","impliedFormat":1},{"version":"b52476feb4a0cbcb25e5931b930fc73cb6643fb1a5060bf8a3dda0eeae5b4b68","affectsGlobalScope":true,"impliedFormat":1},{"version":"e2677634fe27e87348825bb041651e22d50a613e2fdf6a4a3ade971d71bac37e","impliedFormat":1},{"version":"7394959e5a741b185456e1ef5d64599c36c60a323207450991e7a42e08911419","impliedFormat":1},{"version":"8c0bcd6c6b67b4b503c11e91a1fb91522ed585900eab2ab1f61bba7d7caa9d6f","impliedFormat":1},{"version":"8cd19276b6590b3ebbeeb030ac271871b9ed0afc3074ac88a94ed2449174b776","affectsGlobalScope":true,"impliedFormat":1},{"version":"696eb8d28f5949b87d894b26dc97318ef944c794a9a4e4f62360cd1d1958014b","impliedFormat":1},{"version":"3f8fa3061bd7402970b399300880d55257953ee6d3cd408722cb9ac20126460c","impliedFormat":1},{"version":"35ec8b6760fd7138bbf5809b84551e31028fb2ba7b6dc91d95d098bf212ca8b4","affectsGlobalScope":true,"impliedFormat":1},{"version":"5524481e56c48ff486f42926778c0a3cce1cc85dc46683b92b1271865bcf015a","impliedFormat":1},{"version":"68bd56c92c2bd7d2339457eb84d63e7de3bd56a69b25f3576e1568d21a162398","affectsGlobalScope":true,"impliedFormat":1},{"version":"3e93b123f7c2944969d291b35fed2af79a6e9e27fdd5faa99748a51c07c02d28","impliedFormat":1},{"version":"9d19808c8c291a9010a6c788e8532a2da70f811adb431c97520803e0ec649991","impliedFormat":1},{"version":"87aad3dd9752067dc875cfaa466fc44246451c0c560b820796bdd528e29bef40","impliedFormat":1},{"version":"4aacb0dd020eeaef65426153686cc639a78ec2885dc72ad220be1d25f1a439df","impliedFormat":1},{"version":"f0bd7e6d931657b59605c44112eaf8b980ba7f957a5051ed21cb93d978cf2f45","impliedFormat":1},{"version":"8db0ae9cb14d9955b14c214f34dae1b9ef2baee2fe4ce794a4cd3ac2531e3255","affectsGlobalScope":true,"impliedFormat":1},{"version":"15fc6f7512c86810273af28f224251a5a879e4261b4d4c7e532abfbfc3983134","impliedFormat":1},{"version":"58adba1a8ab2d10b54dc1dced4e41f4e7c9772cbbac40939c0dc8ce2cdb1d442","impliedFormat":1},{"version":"641942a78f9063caa5d6b777c99304b7d1dc7328076038c6d94d8a0b81fc95c1","impliedFormat":1},{"version":"714435130b9015fae551788df2a88038471a5a11eb471f27c4ede86552842bc9","impliedFormat":1},{"version":"855cd5f7eb396f5f1ab1bc0f8580339bff77b68a770f84c6b254e319bbfd1ac7","impliedFormat":1},{"version":"5650cf3dace09e7c25d384e3e6b818b938f68f4e8de96f52d9c5a1b3db068e86","impliedFormat":1},{"version":"1354ca5c38bd3fd3836a68e0f7c9f91f172582ba30ab15bb8c075891b91502b7","affectsGlobalScope":true,"impliedFormat":1},{"version":"27fdb0da0daf3b337c5530c5f266efe046a6ceb606e395b346974e4360c36419","impliedFormat":1},{"version":"2d2fcaab481b31a5882065c7951255703ddbe1c0e507af56ea42d79ac3911201","impliedFormat":1},{"version":"a192fe8ec33f75edbc8d8f3ed79f768dfae11ff5735e7fe52bfa69956e46d78d","impliedFormat":1},{"version":"ca867399f7db82df981d6915bcbb2d81131d7d1ef683bc782b59f71dda59bc85","affectsGlobalScope":true,"impliedFormat":1},{"version":"372413016d17d804e1d139418aca0c68e47a83fb6669490857f4b318de8cccb3","affectsGlobalScope":true,"impliedFormat":1},{"version":"9e043a1bc8fbf2a255bccf9bf27e0f1caf916c3b0518ea34aa72357c0afd42ec","impliedFormat":1},{"version":"b4f70ec656a11d570e1a9edce07d118cd58d9760239e2ece99306ee9dfe61d02","impliedFormat":1},{"version":"3bc2f1e2c95c04048212c569ed38e338873f6a8593930cf5a7ef24ffb38fc3b6","impliedFormat":1},{"version":"6e70e9570e98aae2b825b533aa6292b6abd542e8d9f6e9475e88e1d7ba17c866","impliedFormat":1},{"version":"f9d9d753d430ed050dc1bf2667a1bab711ccbb1c1507183d794cc195a5b085cc","impliedFormat":1},{"version":"9eece5e586312581ccd106d4853e861aaaa1a39f8e3ea672b8c3847eedd12f6e","impliedFormat":1},{"version":"47ab634529c5955b6ad793474ae188fce3e6163e3a3fb5edd7e0e48f14435333","impliedFormat":1},{"version":"37ba7b45141a45ce6e80e66f2a96c8a5ab1bcef0fc2d0f56bb58df96ec67e972","impliedFormat":1},{"version":"45650f47bfb376c8a8ed39d4bcda5902ab899a3150029684ee4c10676d9fbaee","impliedFormat":1},{"version":"fad4e3c207fe23922d0b2d06b01acbfb9714c4f2685cf80fd384c8a100c82fd0","affectsGlobalScope":true,"impliedFormat":1},{"version":"74cf591a0f63db318651e0e04cb55f8791385f86e987a67fd4d2eaab8191f730","impliedFormat":1},{"version":"5eab9b3dc9b34f185417342436ec3f106898da5f4801992d8ff38ab3aff346b5","impliedFormat":1},{"version":"12ed4559eba17cd977aa0db658d25c4047067444b51acfdcbf38470630642b23","affectsGlobalScope":true,"impliedFormat":1},{"version":"f3ffabc95802521e1e4bcba4c88d8615176dc6e09111d920c7a213bdda6e1d65","impliedFormat":1},{"version":"809821b8a065e3234a55b3a9d7846231ed18d66dd749f2494c66288d890daf7f","impliedFormat":1},{"version":"ae56f65caf3be91108707bd8dfbccc2a57a91feb5daabf7165a06a945545ed26","impliedFormat":1},{"version":"a136d5de521da20f31631a0a96bf712370779d1c05b7015d7019a9b2a0446ca9","impliedFormat":1},{"version":"c3b41e74b9a84b88b1dca61ec39eee25c0dbc8e7d519ba11bb070918cfacf656","affectsGlobalScope":true,"impliedFormat":1},{"version":"4737a9dc24d0e68b734e6cfbcea0c15a2cfafeb493485e27905f7856988c6b29","affectsGlobalScope":true,"impliedFormat":1},{"version":"36d8d3e7506b631c9582c251a2c0b8a28855af3f76719b12b534c6edf952748d","impliedFormat":1},{"version":"1ca69210cc42729e7ca97d3a9ad48f2e9cb0042bada4075b588ae5387debd318","impliedFormat":1},{"version":"f5ebe66baaf7c552cfa59d75f2bfba679f329204847db3cec385acda245e574e","impliedFormat":1},{"version":"ed59add13139f84da271cafd32e2171876b0a0af2f798d0c663e8eeb867732cf","affectsGlobalScope":true,"impliedFormat":1},{"version":"b7c5e2ea4a9749097c347454805e933844ed207b6eefec6b7cfd418b5f5f7b28","impliedFormat":1},{"version":"b1810689b76fd473bd12cc9ee219f8e62f54a7d08019a235d07424afbf074d25","impliedFormat":1}],"root":[46],"options":{"allowJs":true,"composite":true,"declaration":true,"declarationMap":true,"esModuleInterop":true,"module":1,"outDir":"./dist","rootDir":"./src","skipLibCheck":true,"sourceMap":true,"strict":true,"target":7},"referencedMap":[[95,1],[96,1],[97,2],[52,3],[98,4],[99,5],[100,6],[47,7],[50,8],[48,7],[49,7],[101,9],[102,10],[103,11],[104,12],[105,13],[106,14],[107,14],[108,15],[109,16],[110,17],[111,18],[53,7],[51,7],[112,19],[113,20],[114,21],[146,22],[115,23],[116,24],[117,25],[118,26],[119,27],[120,28],[121,29],[122,30],[123,31],[124,32],[125,32],[126,33],[127,7],[128,34],[130,35],[129,36],[131,37],[132,38],[133,39],[134,40],[135,41],[136,42],[137,43],[138,44],[139,45],[140,46],[141,47],[142,48],[143,49],[54,7],[55,7],[56,7],[94,50],[144,51],[145,52],[44,7],[45,7],[9,7],[8,7],[2,7],[10,7],[11,7],[12,7],[13,7],[14,7],[15,7],[16,7],[17,7],[3,7],[18,7],[19,7],[4,7],[20,7],[24,7],[21,7],[22,7],[23,7],[25,7],[26,7],[27,7],[5,7],[28,7],[29,7],[30,7],[31,7],[6,7],[35,7],[32,7],[33,7],[34,7],[36,7],[7,7],[37,7],[42,7],[43,7],[38,7],[39,7],[40,7],[41,7],[1,7],[72,53],[82,54],[71,53],[92,55],[63,56],[62,57],[91,58],[85,59],[90,60],[65,61],[79,62],[64,63],[88,64],[60,65],[59,58],[89,66],[61,67],[66,68],[67,7],[70,68],[57,7],[93,69],[83,70],[74,71],[75,72],[77,73],[73,74],[76,75],[86,58],[68,76],[69,77],[78,78],[58,79],[81,70],[80,68],[84,7],[87,80],[46,7]],"latestChangedDtsFile":"./dist/index.d.ts","version":"5.9.3"}
+</file>
+
+<file path="packages/types/package.json">
+{
+  "name": "@kanban/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for the Kanban monorepo",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "default": "./dist/api/index.js"
+    },
+    "./domain": {
+      "types": "./dist/domain/index.d.ts",
+      "default": "./dist/domain/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.37",
+    "typescript": "^5.3.3"
+  }
+}
+</file>
+
+<file path="packages/types/src/api/index.ts">
+// API-specific types
+export interface ErrorResponse {
+  success: false;
+  error: string;
+  code: string;
+  statusCode: number;
+  timestamp: string;
+}
+
+export interface SuccessResponse<T> {
+  success: true;
+  data: T;
+  timestamp: string;
+}
+
+export type ApiResult<T> = SuccessResponse<T> | ErrorResponse;
+
+// Request/Response types for common operations
+export interface CreateRequest<T> {
+  data: T;
+}
+
+export interface UpdateRequest<T> {
+  id: string;
+  data: Partial<T>;
+}
+
+export interface DeleteRequest {
+  id: string;
+}
+</file>
+
+<file path="packages/types/src/domain/index.ts">
+// Domain entity types for the Kanban application
+
+export enum TaskStatus {
+  TODO = 'TODO',
+  IN_PROGRESS = 'IN_PROGRESS',
+  DONE = 'DONE',
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  boardId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Board {
+  id: string;
+  name: string;
+  description: string;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type CreateTaskInput = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
+export type UpdateTaskInput = Partial<Omit<Task, 'id' | 'createdAt' | 'updatedAt'>>;
+
+export type CreateBoardInput = Omit<Board, 'id' | 'createdAt' | 'updatedAt'>;
+export type UpdateBoardInput = Partial<Omit<Board, 'id' | 'createdAt' | 'updatedAt'>>;
+</file>
+
+<file path="packages/types/src/index.ts">
+// Common types across the application
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  timestamp: string;
+}
+
+export interface PaginationParams {
+  page: number;
+  limit: number;
+}
+
+export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+</file>
+
+<file path="packages/types/tsconfig.json">
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+</file>
+
+<file path="packages/types/tsconfig.tsbuildinfo">
+{"fileNames":["../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es5.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.core.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.collection.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.generator.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.iterable.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.proxy.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.reflect.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.symbol.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.array.include.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.arraybuffer.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.date.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.object.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.regexp.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.array.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.object.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.symbol.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.bigint.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.date.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.symbol.wellknown.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.number.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.decorators.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.decorators.legacy.d.ts","./src/index.ts","./src/api/index.ts","./src/domain/index.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/disposable.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/indexable.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/iterators.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/index.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/globals.typedarray.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/buffer.buffer.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/globals.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/abortcontroller.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/domexception.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/events.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/header.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/readable.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/file.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/fetch.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/formdata.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/connector.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/client.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/errors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/dispatcher.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/global-dispatcher.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/global-origin.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/pool-stats.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/handlers.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/balanced-pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-interceptor.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-client.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-errors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/proxy-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/env-http-proxy-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/retry-handler.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/retry-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/api.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/interceptors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/util.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/cookies.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/patch.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/websocket.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/eventsource.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/filereader.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/diagnostics-channel.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/content-type.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/cache.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/index.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/fetch.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/assert.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/assert/strict.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/async_hooks.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/buffer.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/child_process.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/cluster.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/console.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/constants.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/crypto.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dgram.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/diagnostics_channel.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dns.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dns/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/domain.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/events.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/fs.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/fs/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/http.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/http2.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/https.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/inspector.generated.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/module.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/net.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/os.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/path.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/perf_hooks.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/process.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/punycode.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/querystring.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/readline.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/readline/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/repl.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/sea.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/consumers.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/web.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/string_decoder.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/test.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/timers.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/timers/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/tls.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/trace_events.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/tty.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/url.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/util.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/v8.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/vm.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/wasi.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/worker_threads.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/zlib.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/index.d.ts"],"fileIdsList":[[54,97,100],[54,99,100],[100],[54,100,105,133],[54,100,101,106,111,119,130,141],[54,100,101,102,111,119],[54,100],[49,50,51,54,100],[54,100,103,142],[54,100,104,105,112,120],[54,100,105,130,138],[54,100,106,108,111,119],[54,99,100,107],[54,100,108,109],[54,100,110,111],[54,99,100,111],[54,100,111,112,113,130,141],[54,100,111,112,113,126,130,133],[54,100,108,111,114,119,130,141],[54,100,111,112,114,115,119,130,138,141],[54,100,114,116,130,138,141],[52,53,54,55,56,57,58,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147],[54,100,111,117],[54,100,118,141,146],[54,100,108,111,119,130],[54,100,120],[54,100,121],[54,99,100,122],[54,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147],[54,100,124],[54,100,125],[54,100,111,126,127],[54,100,126,128,142,144],[54,100,111,130,131,133],[54,100,132,133],[54,100,130,131],[54,100,133],[54,100,134],[54,97,100,130,135],[54,100,111,136,137],[54,100,136,137],[54,100,105,119,130,138],[54,100,139],[54,100,119,140],[54,100,114,125,141],[54,100,105,142],[54,100,130,143],[54,100,118,144],[54,100,145],[54,95,100],[54,95,100,111,113,122,130,133,141,144,146],[54,100,130,147],[54,67,71,100,141],[54,67,100,130,141],[54,62,100],[54,64,67,100,138,141],[54,100,119,138],[54,100,148],[54,62,100,148],[54,64,67,100,119,141],[54,59,60,63,66,100,111,130,141],[54,67,74,100],[54,59,65,100],[54,67,88,89,100],[54,63,67,100,133,141,148],[54,88,100,148],[54,61,62,100,148],[54,67,100],[54,61,62,63,64,65,66,67,68,69,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,89,90,91,92,93,94,100],[54,67,82,100],[54,67,74,75,100],[54,65,67,75,76,100],[54,66,100],[54,59,62,67,100],[54,67,71,75,76,100],[54,71,100],[54,65,67,70,100,141],[54,59,64,67,74,100],[54,100,130],[54,62,67,88,100,146,148]],"fileInfos":[{"version":"c430d44666289dae81f30fa7b2edebf186ecc91a2d4c71266ea6ae76388792e1","affectsGlobalScope":true,"impliedFormat":1},{"version":"45b7ab580deca34ae9729e97c13cfd999df04416a79116c3bfb483804f85ded4","impliedFormat":1},{"version":"3facaf05f0c5fc569c5649dd359892c98a85557e3e0c847964caeb67076f4d75","impliedFormat":1},{"version":"e44bb8bbac7f10ecc786703fe0a6a4b952189f908707980ba8f3c8975a760962","impliedFormat":1},{"version":"5e1c4c362065a6b95ff952c0eab010f04dcd2c3494e813b493ecfd4fcb9fc0d8","impliedFormat":1},{"version":"68d73b4a11549f9c0b7d352d10e91e5dca8faa3322bfb77b661839c42b1ddec7","impliedFormat":1},{"version":"5efce4fc3c29ea84e8928f97adec086e3dc876365e0982cc8479a07954a3efd4","impliedFormat":1},{"version":"c57796738e7f83dbc4b8e65132f11a377649c00dd3eee333f672b8f0a6bea671","affectsGlobalScope":true,"impliedFormat":1},{"version":"dc2df20b1bcdc8c2d34af4926e2c3ab15ffe1160a63e58b7e09833f616efff44","affectsGlobalScope":true,"impliedFormat":1},{"version":"515d0b7b9bea2e31ea4ec968e9edd2c39d3eebf4a2d5cbd04e88639819ae3b71","affectsGlobalScope":true,"impliedFormat":1},{"version":"0559b1f683ac7505ae451f9a96ce4c3c92bdc71411651ca6ddb0e88baaaad6a3","affectsGlobalScope":true,"impliedFormat":1},{"version":"0dc1e7ceda9b8b9b455c3a2d67b0412feab00bd2f66656cd8850e8831b08b537","affectsGlobalScope":true,"impliedFormat":1},{"version":"ce691fb9e5c64efb9547083e4a34091bcbe5bdb41027e310ebba8f7d96a98671","affectsGlobalScope":true,"impliedFormat":1},{"version":"8d697a2a929a5fcb38b7a65594020fcef05ec1630804a33748829c5ff53640d0","affectsGlobalScope":true,"impliedFormat":1},{"version":"4ff2a353abf8a80ee399af572debb8faab2d33ad38c4b4474cff7f26e7653b8d","affectsGlobalScope":true,"impliedFormat":1},{"version":"fb0f136d372979348d59b3f5020b4cdb81b5504192b1cacff5d1fbba29378aa1","affectsGlobalScope":true,"impliedFormat":1},{"version":"d15bea3d62cbbdb9797079416b8ac375ae99162a7fba5de2c6c505446486ac0a","affectsGlobalScope":true,"impliedFormat":1},{"version":"68d18b664c9d32a7336a70235958b8997ebc1c3b8505f4f1ae2b7e7753b87618","affectsGlobalScope":true,"impliedFormat":1},{"version":"eb3d66c8327153d8fa7dd03f9c58d351107fe824c79e9b56b462935176cdf12a","affectsGlobalScope":true,"impliedFormat":1},{"version":"38f0219c9e23c915ef9790ab1d680440d95419ad264816fa15009a8851e79119","affectsGlobalScope":true,"impliedFormat":1},{"version":"69ab18c3b76cd9b1be3d188eaf8bba06112ebbe2f47f6c322b5105a6fbc45a2e","affectsGlobalScope":true,"impliedFormat":1},{"version":"a680117f487a4d2f30ea46f1b4b7f58bef1480456e18ba53ee85c2746eeca012","affectsGlobalScope":true,"impliedFormat":1},{"version":"2f11ff796926e0832f9ae148008138ad583bd181899ab7dd768a2666700b1893","affectsGlobalScope":true,"impliedFormat":1},{"version":"4de680d5bb41c17f7f68e0419412ca23c98d5749dcaaea1896172f06435891fc","affectsGlobalScope":true,"impliedFormat":1},{"version":"954296b30da6d508a104a3a0b5d96b76495c709785c1d11610908e63481ee667","affectsGlobalScope":true,"impliedFormat":1},{"version":"ac9538681b19688c8eae65811b329d3744af679e0bdfa5d842d0e32524c73e1c","affectsGlobalScope":true,"impliedFormat":1},{"version":"0a969edff4bd52585473d24995c5ef223f6652d6ef46193309b3921d65dd4376","affectsGlobalScope":true,"impliedFormat":1},{"version":"9e9fbd7030c440b33d021da145d3232984c8bb7916f277e8ffd3dc2e3eae2bdb","affectsGlobalScope":true,"impliedFormat":1},{"version":"811ec78f7fefcabbda4bfa93b3eb67d9ae166ef95f9bff989d964061cbf81a0c","affectsGlobalScope":true,"impliedFormat":1},{"version":"717937616a17072082152a2ef351cb51f98802fb4b2fdabd32399843875974ca","affectsGlobalScope":true,"impliedFormat":1},{"version":"d7e7d9b7b50e5f22c915b525acc5a49a7a6584cf8f62d0569e557c5cfc4b2ac2","affectsGlobalScope":true,"impliedFormat":1},{"version":"71c37f4c9543f31dfced6c7840e068c5a5aacb7b89111a4364b1d5276b852557","affectsGlobalScope":true,"impliedFormat":1},{"version":"576711e016cf4f1804676043e6a0a5414252560eb57de9faceee34d79798c850","affectsGlobalScope":true,"impliedFormat":1},{"version":"89c1b1281ba7b8a96efc676b11b264de7a8374c5ea1e6617f11880a13fc56dc6","affectsGlobalScope":true,"impliedFormat":1},{"version":"74f7fa2d027d5b33eb0471c8e82a6c87216223181ec31247c357a3e8e2fddc5b","affectsGlobalScope":true,"impliedFormat":1},{"version":"d6d7ae4d1f1f3772e2a3cde568ed08991a8ae34a080ff1151af28b7f798e22ca","affectsGlobalScope":true,"impliedFormat":1},{"version":"063600664504610fe3e99b717a1223f8b1900087fab0b4cad1496a114744f8df","affectsGlobalScope":true,"impliedFormat":1},{"version":"934019d7e3c81950f9a8426d093458b65d5aff2c7c1511233c0fd5b941e608ab","affectsGlobalScope":true,"impliedFormat":1},{"version":"52ada8e0b6e0482b728070b7639ee42e83a9b1c22d205992756fe020fd9f4a47","affectsGlobalScope":true,"impliedFormat":1},{"version":"3bdefe1bfd4d6dee0e26f928f93ccc128f1b64d5d501ff4a8cf3c6371200e5e6","affectsGlobalScope":true,"impliedFormat":1},{"version":"59fb2c069260b4ba00b5643b907ef5d5341b167e7d1dbf58dfd895658bda2867","affectsGlobalScope":true,"impliedFormat":1},{"version":"639e512c0dfc3fad96a84caad71b8834d66329a1f28dc95e3946c9b58176c73a","affectsGlobalScope":true,"impliedFormat":1},{"version":"368af93f74c9c932edd84c58883e736c9e3d53cec1fe24c0b0ff451f529ceab1","affectsGlobalScope":true,"impliedFormat":1},{"version":"8e7f8264d0fb4c5339605a15daadb037bf238c10b654bb3eee14208f860a32ea","affectsGlobalScope":true,"impliedFormat":1},{"version":"782dec38049b92d4e85c1585fbea5474a219c6984a35b004963b00beb1aab538","affectsGlobalScope":true,"impliedFormat":1},{"version":"3e5725ad338c6f24c0e3449daa380b6933890873e428ccc27d2202687142ec07","signature":"29c8c63dfdb295d5966bd689377cf5611085a6b3a75050fcc3e85f3297b6252d"},{"version":"84ab60e334d7b81d13576812da745368d45628bfe5bcc210501e4110667f865c","signature":"0efad606cc45761648d300a30455bd4effd3649261db82bd9e90981a0bea941e"},{"version":"2554d0a304e788143c44f6a37eece8e4addc0b298a8d35b78c0b42e15136c9ea","signature":"b7279ba45f4abb10a39467ced95f554bf957006bf82b137e023b6bc4cff6f169"},{"version":"70521b6ab0dcba37539e5303104f29b721bfb2940b2776da4cc818c07e1fefc1","affectsGlobalScope":true,"impliedFormat":1},{"version":"ab41ef1f2cdafb8df48be20cd969d875602483859dc194e9c97c8a576892c052","affectsGlobalScope":true,"impliedFormat":1},{"version":"d153a11543fd884b596587ccd97aebbeed950b26933ee000f94009f1ab142848","affectsGlobalScope":true,"impliedFormat":1},{"version":"21d819c173c0cf7cc3ce57c3276e77fd9a8a01d35a06ad87158781515c9a438a","impliedFormat":1},{"version":"98cffbf06d6bab333473c70a893770dbe990783904002c4f1a960447b4b53dca","affectsGlobalScope":true,"impliedFormat":1},{"version":"ba481bca06f37d3f2c137ce343c7d5937029b2468f8e26111f3c9d9963d6568d","affectsGlobalScope":true,"impliedFormat":1},{"version":"6d9ef24f9a22a88e3e9b3b3d8c40ab1ddb0853f1bfbd5c843c37800138437b61","affectsGlobalScope":true,"impliedFormat":1},{"version":"1db0b7dca579049ca4193d034d835f6bfe73096c73663e5ef9a0b5779939f3d0","affectsGlobalScope":true,"impliedFormat":1},{"version":"9798340ffb0d067d69b1ae5b32faa17ab31b82466a3fc00d8f2f2df0c8554aaa","affectsGlobalScope":true,"impliedFormat":1},{"version":"f26b11d8d8e4b8028f1c7d618b22274c892e4b0ef5b3678a8ccbad85419aef43","affectsGlobalScope":true,"impliedFormat":1},{"version":"5929864ce17fba74232584d90cb721a89b7ad277220627cc97054ba15a98ea8f","impliedFormat":1},{"version":"763fe0f42b3d79b440a9b6e51e9ba3f3f91352469c1e4b3b67bfa4ff6352f3f4","impliedFormat":1},{"version":"25c8056edf4314820382a5fdb4bb7816999acdcb929c8f75e3f39473b87e85bc","impliedFormat":1},{"version":"c464d66b20788266e5353b48dc4aa6bc0dc4a707276df1e7152ab0c9ae21fad8","impliedFormat":1},{"version":"78d0d27c130d35c60b5e5566c9f1e5be77caf39804636bc1a40133919a949f21","impliedFormat":1},{"version":"c6fd2c5a395f2432786c9cb8deb870b9b0e8ff7e22c029954fabdd692bff6195","impliedFormat":1},{"version":"1d6e127068ea8e104a912e42fc0a110e2aa5a66a356a917a163e8cf9a65e4a75","impliedFormat":1},{"version":"5ded6427296cdf3b9542de4471d2aa8d3983671d4cac0f4bf9c637208d1ced43","impliedFormat":1},{"version":"7f182617db458e98fc18dfb272d40aa2fff3a353c44a89b2c0ccb3937709bfb5","impliedFormat":1},{"version":"cadc8aced301244057c4e7e73fbcae534b0f5b12a37b150d80e5a45aa4bebcbd","impliedFormat":1},{"version":"385aab901643aa54e1c36f5ef3107913b10d1b5bb8cbcd933d4263b80a0d7f20","impliedFormat":1},{"version":"9670d44354bab9d9982eca21945686b5c24a3f893db73c0dae0fd74217a4c219","impliedFormat":1},{"version":"0b8a9268adaf4da35e7fa830c8981cfa22adbbe5b3f6f5ab91f6658899e657a7","impliedFormat":1},{"version":"11396ed8a44c02ab9798b7dca436009f866e8dae3c9c25e8c1fbc396880bf1bb","impliedFormat":1},{"version":"ba7bc87d01492633cb5a0e5da8a4a42a1c86270e7b3d2dea5d156828a84e4882","impliedFormat":1},{"version":"4893a895ea92c85345017a04ed427cbd6a1710453338df26881a6019432febdd","impliedFormat":1},{"version":"c21dc52e277bcfc75fac0436ccb75c204f9e1b3fa5e12729670910639f27343e","impliedFormat":1},{"version":"13f6f39e12b1518c6650bbb220c8985999020fe0f21d818e28f512b7771d00f9","impliedFormat":1},{"version":"9b5369969f6e7175740bf51223112ff209f94ba43ecd3bb09eefff9fd675624a","impliedFormat":1},{"version":"4fe9e626e7164748e8769bbf74b538e09607f07ed17c2f20af8d680ee49fc1da","impliedFormat":1},{"version":"24515859bc0b836719105bb6cc3d68255042a9f02a6022b3187948b204946bd2","impliedFormat":1},{"version":"ea0148f897b45a76544ae179784c95af1bd6721b8610af9ffa467a518a086a43","impliedFormat":1},{"version":"24c6a117721e606c9984335f71711877293a9651e44f59f3d21c1ea0856f9cc9","impliedFormat":1},{"version":"dd3273ead9fbde62a72949c97dbec2247ea08e0c6952e701a483d74ef92d6a17","impliedFormat":1},{"version":"405822be75ad3e4d162e07439bac80c6bcc6dbae1929e179cf467ec0b9ee4e2e","impliedFormat":1},{"version":"0db18c6e78ea846316c012478888f33c11ffadab9efd1cc8bcc12daded7a60b6","impliedFormat":1},{"version":"e61be3f894b41b7baa1fbd6a66893f2579bfad01d208b4ff61daef21493ef0a8","impliedFormat":1},{"version":"bd0532fd6556073727d28da0edfd1736417a3f9f394877b6d5ef6ad88fba1d1a","impliedFormat":1},{"version":"89167d696a849fce5ca508032aabfe901c0868f833a8625d5a9c6e861ef935d2","impliedFormat":1},{"version":"615ba88d0128ed16bf83ef8ccbb6aff05c3ee2db1cc0f89ab50a4939bfc1943f","impliedFormat":1},{"version":"a4d551dbf8746780194d550c88f26cf937caf8d56f102969a110cfaed4b06656","impliedFormat":1},{"version":"8bd86b8e8f6a6aa6c49b71e14c4ffe1211a0e97c80f08d2c8cc98838006e4b88","impliedFormat":1},{"version":"317e63deeb21ac07f3992f5b50cdca8338f10acd4fbb7257ebf56735bf52ab00","impliedFormat":1},{"version":"4732aec92b20fb28c5fe9ad99521fb59974289ed1e45aecb282616202184064f","impliedFormat":1},{"version":"2e85db9e6fd73cfa3d7f28e0ab6b55417ea18931423bd47b409a96e4a169e8e6","impliedFormat":1},{"version":"c46e079fe54c76f95c67fb89081b3e399da2c7d109e7dca8e4b58d83e332e605","impliedFormat":1},{"version":"bf67d53d168abc1298888693338cb82854bdb2e69ef83f8a0092093c2d562107","impliedFormat":1},{"version":"b52476feb4a0cbcb25e5931b930fc73cb6643fb1a5060bf8a3dda0eeae5b4b68","affectsGlobalScope":true,"impliedFormat":1},{"version":"e2677634fe27e87348825bb041651e22d50a613e2fdf6a4a3ade971d71bac37e","impliedFormat":1},{"version":"7394959e5a741b185456e1ef5d64599c36c60a323207450991e7a42e08911419","impliedFormat":1},{"version":"8c0bcd6c6b67b4b503c11e91a1fb91522ed585900eab2ab1f61bba7d7caa9d6f","impliedFormat":1},{"version":"8cd19276b6590b3ebbeeb030ac271871b9ed0afc3074ac88a94ed2449174b776","affectsGlobalScope":true,"impliedFormat":1},{"version":"696eb8d28f5949b87d894b26dc97318ef944c794a9a4e4f62360cd1d1958014b","impliedFormat":1},{"version":"3f8fa3061bd7402970b399300880d55257953ee6d3cd408722cb9ac20126460c","impliedFormat":1},{"version":"35ec8b6760fd7138bbf5809b84551e31028fb2ba7b6dc91d95d098bf212ca8b4","affectsGlobalScope":true,"impliedFormat":1},{"version":"5524481e56c48ff486f42926778c0a3cce1cc85dc46683b92b1271865bcf015a","impliedFormat":1},{"version":"68bd56c92c2bd7d2339457eb84d63e7de3bd56a69b25f3576e1568d21a162398","affectsGlobalScope":true,"impliedFormat":1},{"version":"3e93b123f7c2944969d291b35fed2af79a6e9e27fdd5faa99748a51c07c02d28","impliedFormat":1},{"version":"9d19808c8c291a9010a6c788e8532a2da70f811adb431c97520803e0ec649991","impliedFormat":1},{"version":"87aad3dd9752067dc875cfaa466fc44246451c0c560b820796bdd528e29bef40","impliedFormat":1},{"version":"4aacb0dd020eeaef65426153686cc639a78ec2885dc72ad220be1d25f1a439df","impliedFormat":1},{"version":"f0bd7e6d931657b59605c44112eaf8b980ba7f957a5051ed21cb93d978cf2f45","impliedFormat":1},{"version":"8db0ae9cb14d9955b14c214f34dae1b9ef2baee2fe4ce794a4cd3ac2531e3255","affectsGlobalScope":true,"impliedFormat":1},{"version":"15fc6f7512c86810273af28f224251a5a879e4261b4d4c7e532abfbfc3983134","impliedFormat":1},{"version":"58adba1a8ab2d10b54dc1dced4e41f4e7c9772cbbac40939c0dc8ce2cdb1d442","impliedFormat":1},{"version":"641942a78f9063caa5d6b777c99304b7d1dc7328076038c6d94d8a0b81fc95c1","impliedFormat":1},{"version":"714435130b9015fae551788df2a88038471a5a11eb471f27c4ede86552842bc9","impliedFormat":1},{"version":"855cd5f7eb396f5f1ab1bc0f8580339bff77b68a770f84c6b254e319bbfd1ac7","impliedFormat":1},{"version":"5650cf3dace09e7c25d384e3e6b818b938f68f4e8de96f52d9c5a1b3db068e86","impliedFormat":1},{"version":"1354ca5c38bd3fd3836a68e0f7c9f91f172582ba30ab15bb8c075891b91502b7","affectsGlobalScope":true,"impliedFormat":1},{"version":"27fdb0da0daf3b337c5530c5f266efe046a6ceb606e395b346974e4360c36419","impliedFormat":1},{"version":"2d2fcaab481b31a5882065c7951255703ddbe1c0e507af56ea42d79ac3911201","impliedFormat":1},{"version":"a192fe8ec33f75edbc8d8f3ed79f768dfae11ff5735e7fe52bfa69956e46d78d","impliedFormat":1},{"version":"ca867399f7db82df981d6915bcbb2d81131d7d1ef683bc782b59f71dda59bc85","affectsGlobalScope":true,"impliedFormat":1},{"version":"372413016d17d804e1d139418aca0c68e47a83fb6669490857f4b318de8cccb3","affectsGlobalScope":true,"impliedFormat":1},{"version":"9e043a1bc8fbf2a255bccf9bf27e0f1caf916c3b0518ea34aa72357c0afd42ec","impliedFormat":1},{"version":"b4f70ec656a11d570e1a9edce07d118cd58d9760239e2ece99306ee9dfe61d02","impliedFormat":1},{"version":"3bc2f1e2c95c04048212c569ed38e338873f6a8593930cf5a7ef24ffb38fc3b6","impliedFormat":1},{"version":"6e70e9570e98aae2b825b533aa6292b6abd542e8d9f6e9475e88e1d7ba17c866","impliedFormat":1},{"version":"f9d9d753d430ed050dc1bf2667a1bab711ccbb1c1507183d794cc195a5b085cc","impliedFormat":1},{"version":"9eece5e586312581ccd106d4853e861aaaa1a39f8e3ea672b8c3847eedd12f6e","impliedFormat":1},{"version":"47ab634529c5955b6ad793474ae188fce3e6163e3a3fb5edd7e0e48f14435333","impliedFormat":1},{"version":"37ba7b45141a45ce6e80e66f2a96c8a5ab1bcef0fc2d0f56bb58df96ec67e972","impliedFormat":1},{"version":"45650f47bfb376c8a8ed39d4bcda5902ab899a3150029684ee4c10676d9fbaee","impliedFormat":1},{"version":"fad4e3c207fe23922d0b2d06b01acbfb9714c4f2685cf80fd384c8a100c82fd0","affectsGlobalScope":true,"impliedFormat":1},{"version":"74cf591a0f63db318651e0e04cb55f8791385f86e987a67fd4d2eaab8191f730","impliedFormat":1},{"version":"5eab9b3dc9b34f185417342436ec3f106898da5f4801992d8ff38ab3aff346b5","impliedFormat":1},{"version":"12ed4559eba17cd977aa0db658d25c4047067444b51acfdcbf38470630642b23","affectsGlobalScope":true,"impliedFormat":1},{"version":"f3ffabc95802521e1e4bcba4c88d8615176dc6e09111d920c7a213bdda6e1d65","impliedFormat":1},{"version":"809821b8a065e3234a55b3a9d7846231ed18d66dd749f2494c66288d890daf7f","impliedFormat":1},{"version":"ae56f65caf3be91108707bd8dfbccc2a57a91feb5daabf7165a06a945545ed26","impliedFormat":1},{"version":"a136d5de521da20f31631a0a96bf712370779d1c05b7015d7019a9b2a0446ca9","impliedFormat":1},{"version":"c3b41e74b9a84b88b1dca61ec39eee25c0dbc8e7d519ba11bb070918cfacf656","affectsGlobalScope":true,"impliedFormat":1},{"version":"4737a9dc24d0e68b734e6cfbcea0c15a2cfafeb493485e27905f7856988c6b29","affectsGlobalScope":true,"impliedFormat":1},{"version":"36d8d3e7506b631c9582c251a2c0b8a28855af3f76719b12b534c6edf952748d","impliedFormat":1},{"version":"1ca69210cc42729e7ca97d3a9ad48f2e9cb0042bada4075b588ae5387debd318","impliedFormat":1},{"version":"f5ebe66baaf7c552cfa59d75f2bfba679f329204847db3cec385acda245e574e","impliedFormat":1},{"version":"ed59add13139f84da271cafd32e2171876b0a0af2f798d0c663e8eeb867732cf","affectsGlobalScope":true,"impliedFormat":1},{"version":"b7c5e2ea4a9749097c347454805e933844ed207b6eefec6b7cfd418b5f5f7b28","impliedFormat":1},{"version":"b1810689b76fd473bd12cc9ee219f8e62f54a7d08019a235d07424afbf074d25","impliedFormat":1}],"root":[[46,48]],"options":{"allowJs":true,"composite":true,"declaration":true,"declarationMap":true,"esModuleInterop":true,"module":1,"outDir":"./dist","rootDir":"./src","skipLibCheck":true,"sourceMap":true,"strict":true,"target":7},"referencedMap":[[97,1],[98,1],[99,2],[54,3],[100,4],[101,5],[102,6],[49,7],[52,8],[50,7],[51,7],[103,9],[104,10],[105,11],[106,12],[107,13],[108,14],[109,14],[110,15],[111,16],[112,17],[113,18],[55,7],[53,7],[114,19],[115,20],[116,21],[148,22],[117,23],[118,24],[119,25],[120,26],[121,27],[122,28],[123,29],[124,30],[125,31],[126,32],[127,32],[128,33],[129,7],[130,34],[132,35],[131,36],[133,37],[134,38],[135,39],[136,40],[137,41],[138,42],[139,43],[140,44],[141,45],[142,46],[143,47],[144,48],[145,49],[56,7],[57,7],[58,7],[96,50],[146,51],[147,52],[44,7],[45,7],[9,7],[8,7],[2,7],[10,7],[11,7],[12,7],[13,7],[14,7],[15,7],[16,7],[17,7],[3,7],[18,7],[19,7],[4,7],[20,7],[24,7],[21,7],[22,7],[23,7],[25,7],[26,7],[27,7],[5,7],[28,7],[29,7],[30,7],[31,7],[6,7],[35,7],[32,7],[33,7],[34,7],[36,7],[7,7],[37,7],[42,7],[43,7],[38,7],[39,7],[40,7],[41,7],[1,7],[74,53],[84,54],[73,53],[94,55],[65,56],[64,57],[93,58],[87,59],[92,60],[67,61],[81,62],[66,63],[90,64],[62,65],[61,58],[91,66],[63,67],[68,68],[69,7],[72,68],[59,7],[95,69],[85,70],[76,71],[77,72],[79,73],[75,74],[78,75],[88,58],[70,76],[71,77],[80,78],[60,79],[83,70],[82,68],[86,7],[89,80],[47,7],[48,7],[46,7]],"latestChangedDtsFile":"./dist/index.d.ts","version":"5.9.3"}
+</file>
+
+<file path="packages/utils/package.json">
+{
+  "name": "@kanban/utils",
+  "version": "1.0.0",
+  "description": "Shared utilities for the Kanban monorepo",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./validation": {
+      "types": "./dist/validation/index.d.ts",
+      "default": "./dist/validation/index.js"
+    },
+    "./formatting": {
+      "types": "./dist/formatting/index.d.ts",
+      "default": "./dist/formatting/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3"
+  }
+}
+</file>
+
+<file path="packages/utils/src/formatting/index.ts">
+// Formatting utilities
+
+export const formatDate = (date: Date, locale = 'en-US'): string => {
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+};
+
+export const formatTime = (date: Date, locale = 'en-US'): string => {
+  return new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(date);
+};
+
+export const formatDateTime = (date: Date, locale = 'en-US'): string => {
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+};
+
+export const formatBytes = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+};
+
+export const capitalize = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+export const toKebabCase = (str: string): string => {
+  return str.replace(/\B(?=[A-Z])/g, '-').toLowerCase();
+};
+
+export const toPascalCase = (str: string): string => {
+  return str
+    .split(/[_-\s]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+};
+</file>
+
+<file path="packages/utils/src/index.ts">
+// Export all utilities
+export * from './validation';
+export * from './formatting';
+
+// Helper utilities
+export const isDevelopment = (): boolean => {
+  return process.env.NODE_ENV === 'development';
+};
+
+export const isProduction = (): boolean => {
+  return process.env.NODE_ENV === 'production';
+};
+
+export const delay = (ms: number): Promise<void> => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const getEnvVar = (key: string, defaultValue?: string): string => {
+  const value = process.env[key];
+  if (!value && defaultValue === undefined) {
+    throw new Error(`Environment variable ${key} is not defined`);
+  }
+  return value || defaultValue || '';
+};
+</file>
+
+<file path="packages/utils/src/validation/index.ts">
+// Validation utilities
+
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+export const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const isValidId = (id: string): boolean => {
+  // UUID v4 format
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(id);
+};
+
+export const isEmpty = (value: unknown): boolean => {
+  if (value === null || value === undefined) return true;
+  if (typeof value === 'string') return value.trim().length === 0;
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.keys(value).length === 0;
+  return false;
+};
+
+export const isNonEmpty = <T>(value: T | null | undefined): value is T => {
+  return value !== null && value !== undefined;
+};
+
+export const validatePaginationParams = (
+  page: number,
+  limit: number
+): { valid: boolean; error?: string } => {
+  if (!Number.isInteger(page) || page < 1) {
+    return { valid: false, error: 'Page must be a positive integer' };
+  }
+  if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+    return { valid: false, error: 'Limit must be between 1 and 100' };
+  }
+  return { valid: true };
+};
+</file>
+
+<file path="packages/utils/tsconfig.json">
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+</file>
+
+<file path="packages/utils/tsconfig.tsbuildinfo">
+{"fileNames":["../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es5.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.core.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.collection.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.generator.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.iterable.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.proxy.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.reflect.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.symbol.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.array.include.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2016.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.arraybuffer.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.date.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.object.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.sharedmemory.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2018.regexp.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.array.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.object.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.symbol.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2019.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.bigint.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.date.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.promise.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.string.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.symbol.wellknown.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.intl.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.es2020.number.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.decorators.d.ts","../../node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/lib.decorators.legacy.d.ts","./src/validation/index.ts","./src/formatting/index.ts","./src/index.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/disposable.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/indexable.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/iterators.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/compatibility/index.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/globals.typedarray.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/buffer.buffer.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/globals.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/abortcontroller.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/domexception.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/events.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/header.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/readable.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/file.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/fetch.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/formdata.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/connector.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/client.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/errors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/dispatcher.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/global-dispatcher.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/global-origin.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/pool-stats.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/handlers.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/balanced-pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-interceptor.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-client.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-pool.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/mock-errors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/proxy-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/env-http-proxy-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/retry-handler.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/retry-agent.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/api.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/interceptors.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/util.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/cookies.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/patch.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/websocket.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/eventsource.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/filereader.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/diagnostics-channel.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/content-type.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/cache.d.ts","../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types/index.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/web-globals/fetch.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/assert.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/assert/strict.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/async_hooks.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/buffer.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/child_process.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/cluster.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/console.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/constants.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/crypto.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dgram.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/diagnostics_channel.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dns.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/dns/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/domain.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/events.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/fs.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/fs/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/http.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/http2.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/https.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/inspector.generated.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/module.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/net.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/os.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/path.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/perf_hooks.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/process.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/punycode.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/querystring.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/readline.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/readline/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/repl.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/sea.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/consumers.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/stream/web.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/string_decoder.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/test.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/timers.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/timers/promises.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/tls.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/trace_events.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/tty.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/url.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/util.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/v8.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/vm.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/wasi.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/worker_threads.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/zlib.d.ts","../../node_modules/.pnpm/@types+node@20.19.37/node_modules/@types/node/index.d.ts"],"fileIdsList":[[54,97,100],[54,99,100],[100],[54,100,105,133],[54,100,101,106,111,119,130,141],[54,100,101,102,111,119],[54,100],[49,50,51,54,100],[54,100,103,142],[54,100,104,105,112,120],[54,100,105,130,138],[54,100,106,108,111,119],[54,99,100,107],[54,100,108,109],[54,100,110,111],[54,99,100,111],[54,100,111,112,113,130,141],[54,100,111,112,113,126,130,133],[54,100,108,111,114,119,130,141],[54,100,111,112,114,115,119,130,138,141],[54,100,114,116,130,138,141],[52,53,54,55,56,57,58,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147],[54,100,111,117],[54,100,118,141,146],[54,100,108,111,119,130],[54,100,120],[54,100,121],[54,99,100,122],[54,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147],[54,100,124],[54,100,125],[54,100,111,126,127],[54,100,126,128,142,144],[54,100,111,130,131,133],[54,100,132,133],[54,100,130,131],[54,100,133],[54,100,134],[54,97,100,130,135],[54,100,111,136,137],[54,100,136,137],[54,100,105,119,130,138],[54,100,139],[54,100,119,140],[54,100,114,125,141],[54,100,105,142],[54,100,130,143],[54,100,118,144],[54,100,145],[54,95,100],[54,95,100,111,113,122,130,133,141,144,146],[54,100,130,147],[54,67,71,100,141],[54,67,100,130,141],[54,62,100],[54,64,67,100,138,141],[54,100,119,138],[54,100,148],[54,62,100,148],[54,64,67,100,119,141],[54,59,60,63,66,100,111,130,141],[54,67,74,100],[54,59,65,100],[54,67,88,89,100],[54,63,67,100,133,141,148],[54,88,100,148],[54,61,62,100,148],[54,67,100],[54,61,62,63,64,65,66,67,68,69,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,89,90,91,92,93,94,100],[54,67,82,100],[54,67,74,75,100],[54,65,67,75,76,100],[54,66,100],[54,59,62,67,100],[54,67,71,75,76,100],[54,71,100],[54,65,67,70,100,141],[54,59,64,67,74,100],[54,100,130],[54,62,67,88,100,146,148],[46,47,54,100]],"fileInfos":[{"version":"c430d44666289dae81f30fa7b2edebf186ecc91a2d4c71266ea6ae76388792e1","affectsGlobalScope":true,"impliedFormat":1},{"version":"45b7ab580deca34ae9729e97c13cfd999df04416a79116c3bfb483804f85ded4","impliedFormat":1},{"version":"3facaf05f0c5fc569c5649dd359892c98a85557e3e0c847964caeb67076f4d75","impliedFormat":1},{"version":"e44bb8bbac7f10ecc786703fe0a6a4b952189f908707980ba8f3c8975a760962","impliedFormat":1},{"version":"5e1c4c362065a6b95ff952c0eab010f04dcd2c3494e813b493ecfd4fcb9fc0d8","impliedFormat":1},{"version":"68d73b4a11549f9c0b7d352d10e91e5dca8faa3322bfb77b661839c42b1ddec7","impliedFormat":1},{"version":"5efce4fc3c29ea84e8928f97adec086e3dc876365e0982cc8479a07954a3efd4","impliedFormat":1},{"version":"c57796738e7f83dbc4b8e65132f11a377649c00dd3eee333f672b8f0a6bea671","affectsGlobalScope":true,"impliedFormat":1},{"version":"dc2df20b1bcdc8c2d34af4926e2c3ab15ffe1160a63e58b7e09833f616efff44","affectsGlobalScope":true,"impliedFormat":1},{"version":"515d0b7b9bea2e31ea4ec968e9edd2c39d3eebf4a2d5cbd04e88639819ae3b71","affectsGlobalScope":true,"impliedFormat":1},{"version":"0559b1f683ac7505ae451f9a96ce4c3c92bdc71411651ca6ddb0e88baaaad6a3","affectsGlobalScope":true,"impliedFormat":1},{"version":"0dc1e7ceda9b8b9b455c3a2d67b0412feab00bd2f66656cd8850e8831b08b537","affectsGlobalScope":true,"impliedFormat":1},{"version":"ce691fb9e5c64efb9547083e4a34091bcbe5bdb41027e310ebba8f7d96a98671","affectsGlobalScope":true,"impliedFormat":1},{"version":"8d697a2a929a5fcb38b7a65594020fcef05ec1630804a33748829c5ff53640d0","affectsGlobalScope":true,"impliedFormat":1},{"version":"4ff2a353abf8a80ee399af572debb8faab2d33ad38c4b4474cff7f26e7653b8d","affectsGlobalScope":true,"impliedFormat":1},{"version":"fb0f136d372979348d59b3f5020b4cdb81b5504192b1cacff5d1fbba29378aa1","affectsGlobalScope":true,"impliedFormat":1},{"version":"d15bea3d62cbbdb9797079416b8ac375ae99162a7fba5de2c6c505446486ac0a","affectsGlobalScope":true,"impliedFormat":1},{"version":"68d18b664c9d32a7336a70235958b8997ebc1c3b8505f4f1ae2b7e7753b87618","affectsGlobalScope":true,"impliedFormat":1},{"version":"eb3d66c8327153d8fa7dd03f9c58d351107fe824c79e9b56b462935176cdf12a","affectsGlobalScope":true,"impliedFormat":1},{"version":"38f0219c9e23c915ef9790ab1d680440d95419ad264816fa15009a8851e79119","affectsGlobalScope":true,"impliedFormat":1},{"version":"69ab18c3b76cd9b1be3d188eaf8bba06112ebbe2f47f6c322b5105a6fbc45a2e","affectsGlobalScope":true,"impliedFormat":1},{"version":"a680117f487a4d2f30ea46f1b4b7f58bef1480456e18ba53ee85c2746eeca012","affectsGlobalScope":true,"impliedFormat":1},{"version":"2f11ff796926e0832f9ae148008138ad583bd181899ab7dd768a2666700b1893","affectsGlobalScope":true,"impliedFormat":1},{"version":"4de680d5bb41c17f7f68e0419412ca23c98d5749dcaaea1896172f06435891fc","affectsGlobalScope":true,"impliedFormat":1},{"version":"954296b30da6d508a104a3a0b5d96b76495c709785c1d11610908e63481ee667","affectsGlobalScope":true,"impliedFormat":1},{"version":"ac9538681b19688c8eae65811b329d3744af679e0bdfa5d842d0e32524c73e1c","affectsGlobalScope":true,"impliedFormat":1},{"version":"0a969edff4bd52585473d24995c5ef223f6652d6ef46193309b3921d65dd4376","affectsGlobalScope":true,"impliedFormat":1},{"version":"9e9fbd7030c440b33d021da145d3232984c8bb7916f277e8ffd3dc2e3eae2bdb","affectsGlobalScope":true,"impliedFormat":1},{"version":"811ec78f7fefcabbda4bfa93b3eb67d9ae166ef95f9bff989d964061cbf81a0c","affectsGlobalScope":true,"impliedFormat":1},{"version":"717937616a17072082152a2ef351cb51f98802fb4b2fdabd32399843875974ca","affectsGlobalScope":true,"impliedFormat":1},{"version":"d7e7d9b7b50e5f22c915b525acc5a49a7a6584cf8f62d0569e557c5cfc4b2ac2","affectsGlobalScope":true,"impliedFormat":1},{"version":"71c37f4c9543f31dfced6c7840e068c5a5aacb7b89111a4364b1d5276b852557","affectsGlobalScope":true,"impliedFormat":1},{"version":"576711e016cf4f1804676043e6a0a5414252560eb57de9faceee34d79798c850","affectsGlobalScope":true,"impliedFormat":1},{"version":"89c1b1281ba7b8a96efc676b11b264de7a8374c5ea1e6617f11880a13fc56dc6","affectsGlobalScope":true,"impliedFormat":1},{"version":"74f7fa2d027d5b33eb0471c8e82a6c87216223181ec31247c357a3e8e2fddc5b","affectsGlobalScope":true,"impliedFormat":1},{"version":"d6d7ae4d1f1f3772e2a3cde568ed08991a8ae34a080ff1151af28b7f798e22ca","affectsGlobalScope":true,"impliedFormat":1},{"version":"063600664504610fe3e99b717a1223f8b1900087fab0b4cad1496a114744f8df","affectsGlobalScope":true,"impliedFormat":1},{"version":"934019d7e3c81950f9a8426d093458b65d5aff2c7c1511233c0fd5b941e608ab","affectsGlobalScope":true,"impliedFormat":1},{"version":"52ada8e0b6e0482b728070b7639ee42e83a9b1c22d205992756fe020fd9f4a47","affectsGlobalScope":true,"impliedFormat":1},{"version":"3bdefe1bfd4d6dee0e26f928f93ccc128f1b64d5d501ff4a8cf3c6371200e5e6","affectsGlobalScope":true,"impliedFormat":1},{"version":"59fb2c069260b4ba00b5643b907ef5d5341b167e7d1dbf58dfd895658bda2867","affectsGlobalScope":true,"impliedFormat":1},{"version":"639e512c0dfc3fad96a84caad71b8834d66329a1f28dc95e3946c9b58176c73a","affectsGlobalScope":true,"impliedFormat":1},{"version":"368af93f74c9c932edd84c58883e736c9e3d53cec1fe24c0b0ff451f529ceab1","affectsGlobalScope":true,"impliedFormat":1},{"version":"8e7f8264d0fb4c5339605a15daadb037bf238c10b654bb3eee14208f860a32ea","affectsGlobalScope":true,"impliedFormat":1},{"version":"782dec38049b92d4e85c1585fbea5474a219c6984a35b004963b00beb1aab538","affectsGlobalScope":true,"impliedFormat":1},{"version":"29c830eebf98a1f391361c69e679c0204677d98ec89fe94cde2b5abe0694b699","signature":"d52e356fefd59583ae1bc116e661e538913fa5722452683ea3c21b0ee81b2092"},{"version":"f92c0b8df7e5a853b9f7c0cc5e4d5c8a1b37cbf99425cf56e59db7760b5af9f4","signature":"1e7f9d5bcb93026b4f221d9dfb86cc85542ad18ff99e4bdde84d25653570e092"},{"version":"76552ca2f6be21b68e2d6b5c1e9da81f0dfd853f10cd5c19f87c4c78a1935dda","signature":"446b8962901678d0c1b9ca87b2ce6842e248bfc95bf58274a02fa881a607d70f"},{"version":"70521b6ab0dcba37539e5303104f29b721bfb2940b2776da4cc818c07e1fefc1","affectsGlobalScope":true,"impliedFormat":1},{"version":"ab41ef1f2cdafb8df48be20cd969d875602483859dc194e9c97c8a576892c052","affectsGlobalScope":true,"impliedFormat":1},{"version":"d153a11543fd884b596587ccd97aebbeed950b26933ee000f94009f1ab142848","affectsGlobalScope":true,"impliedFormat":1},{"version":"21d819c173c0cf7cc3ce57c3276e77fd9a8a01d35a06ad87158781515c9a438a","impliedFormat":1},{"version":"98cffbf06d6bab333473c70a893770dbe990783904002c4f1a960447b4b53dca","affectsGlobalScope":true,"impliedFormat":1},{"version":"ba481bca06f37d3f2c137ce343c7d5937029b2468f8e26111f3c9d9963d6568d","affectsGlobalScope":true,"impliedFormat":1},{"version":"6d9ef24f9a22a88e3e9b3b3d8c40ab1ddb0853f1bfbd5c843c37800138437b61","affectsGlobalScope":true,"impliedFormat":1},{"version":"1db0b7dca579049ca4193d034d835f6bfe73096c73663e5ef9a0b5779939f3d0","affectsGlobalScope":true,"impliedFormat":1},{"version":"9798340ffb0d067d69b1ae5b32faa17ab31b82466a3fc00d8f2f2df0c8554aaa","affectsGlobalScope":true,"impliedFormat":1},{"version":"f26b11d8d8e4b8028f1c7d618b22274c892e4b0ef5b3678a8ccbad85419aef43","affectsGlobalScope":true,"impliedFormat":1},{"version":"5929864ce17fba74232584d90cb721a89b7ad277220627cc97054ba15a98ea8f","impliedFormat":1},{"version":"763fe0f42b3d79b440a9b6e51e9ba3f3f91352469c1e4b3b67bfa4ff6352f3f4","impliedFormat":1},{"version":"25c8056edf4314820382a5fdb4bb7816999acdcb929c8f75e3f39473b87e85bc","impliedFormat":1},{"version":"c464d66b20788266e5353b48dc4aa6bc0dc4a707276df1e7152ab0c9ae21fad8","impliedFormat":1},{"version":"78d0d27c130d35c60b5e5566c9f1e5be77caf39804636bc1a40133919a949f21","impliedFormat":1},{"version":"c6fd2c5a395f2432786c9cb8deb870b9b0e8ff7e22c029954fabdd692bff6195","impliedFormat":1},{"version":"1d6e127068ea8e104a912e42fc0a110e2aa5a66a356a917a163e8cf9a65e4a75","impliedFormat":1},{"version":"5ded6427296cdf3b9542de4471d2aa8d3983671d4cac0f4bf9c637208d1ced43","impliedFormat":1},{"version":"7f182617db458e98fc18dfb272d40aa2fff3a353c44a89b2c0ccb3937709bfb5","impliedFormat":1},{"version":"cadc8aced301244057c4e7e73fbcae534b0f5b12a37b150d80e5a45aa4bebcbd","impliedFormat":1},{"version":"385aab901643aa54e1c36f5ef3107913b10d1b5bb8cbcd933d4263b80a0d7f20","impliedFormat":1},{"version":"9670d44354bab9d9982eca21945686b5c24a3f893db73c0dae0fd74217a4c219","impliedFormat":1},{"version":"0b8a9268adaf4da35e7fa830c8981cfa22adbbe5b3f6f5ab91f6658899e657a7","impliedFormat":1},{"version":"11396ed8a44c02ab9798b7dca436009f866e8dae3c9c25e8c1fbc396880bf1bb","impliedFormat":1},{"version":"ba7bc87d01492633cb5a0e5da8a4a42a1c86270e7b3d2dea5d156828a84e4882","impliedFormat":1},{"version":"4893a895ea92c85345017a04ed427cbd6a1710453338df26881a6019432febdd","impliedFormat":1},{"version":"c21dc52e277bcfc75fac0436ccb75c204f9e1b3fa5e12729670910639f27343e","impliedFormat":1},{"version":"13f6f39e12b1518c6650bbb220c8985999020fe0f21d818e28f512b7771d00f9","impliedFormat":1},{"version":"9b5369969f6e7175740bf51223112ff209f94ba43ecd3bb09eefff9fd675624a","impliedFormat":1},{"version":"4fe9e626e7164748e8769bbf74b538e09607f07ed17c2f20af8d680ee49fc1da","impliedFormat":1},{"version":"24515859bc0b836719105bb6cc3d68255042a9f02a6022b3187948b204946bd2","impliedFormat":1},{"version":"ea0148f897b45a76544ae179784c95af1bd6721b8610af9ffa467a518a086a43","impliedFormat":1},{"version":"24c6a117721e606c9984335f71711877293a9651e44f59f3d21c1ea0856f9cc9","impliedFormat":1},{"version":"dd3273ead9fbde62a72949c97dbec2247ea08e0c6952e701a483d74ef92d6a17","impliedFormat":1},{"version":"405822be75ad3e4d162e07439bac80c6bcc6dbae1929e179cf467ec0b9ee4e2e","impliedFormat":1},{"version":"0db18c6e78ea846316c012478888f33c11ffadab9efd1cc8bcc12daded7a60b6","impliedFormat":1},{"version":"e61be3f894b41b7baa1fbd6a66893f2579bfad01d208b4ff61daef21493ef0a8","impliedFormat":1},{"version":"bd0532fd6556073727d28da0edfd1736417a3f9f394877b6d5ef6ad88fba1d1a","impliedFormat":1},{"version":"89167d696a849fce5ca508032aabfe901c0868f833a8625d5a9c6e861ef935d2","impliedFormat":1},{"version":"615ba88d0128ed16bf83ef8ccbb6aff05c3ee2db1cc0f89ab50a4939bfc1943f","impliedFormat":1},{"version":"a4d551dbf8746780194d550c88f26cf937caf8d56f102969a110cfaed4b06656","impliedFormat":1},{"version":"8bd86b8e8f6a6aa6c49b71e14c4ffe1211a0e97c80f08d2c8cc98838006e4b88","impliedFormat":1},{"version":"317e63deeb21ac07f3992f5b50cdca8338f10acd4fbb7257ebf56735bf52ab00","impliedFormat":1},{"version":"4732aec92b20fb28c5fe9ad99521fb59974289ed1e45aecb282616202184064f","impliedFormat":1},{"version":"2e85db9e6fd73cfa3d7f28e0ab6b55417ea18931423bd47b409a96e4a169e8e6","impliedFormat":1},{"version":"c46e079fe54c76f95c67fb89081b3e399da2c7d109e7dca8e4b58d83e332e605","impliedFormat":1},{"version":"bf67d53d168abc1298888693338cb82854bdb2e69ef83f8a0092093c2d562107","impliedFormat":1},{"version":"b52476feb4a0cbcb25e5931b930fc73cb6643fb1a5060bf8a3dda0eeae5b4b68","affectsGlobalScope":true,"impliedFormat":1},{"version":"e2677634fe27e87348825bb041651e22d50a613e2fdf6a4a3ade971d71bac37e","impliedFormat":1},{"version":"7394959e5a741b185456e1ef5d64599c36c60a323207450991e7a42e08911419","impliedFormat":1},{"version":"8c0bcd6c6b67b4b503c11e91a1fb91522ed585900eab2ab1f61bba7d7caa9d6f","impliedFormat":1},{"version":"8cd19276b6590b3ebbeeb030ac271871b9ed0afc3074ac88a94ed2449174b776","affectsGlobalScope":true,"impliedFormat":1},{"version":"696eb8d28f5949b87d894b26dc97318ef944c794a9a4e4f62360cd1d1958014b","impliedFormat":1},{"version":"3f8fa3061bd7402970b399300880d55257953ee6d3cd408722cb9ac20126460c","impliedFormat":1},{"version":"35ec8b6760fd7138bbf5809b84551e31028fb2ba7b6dc91d95d098bf212ca8b4","affectsGlobalScope":true,"impliedFormat":1},{"version":"5524481e56c48ff486f42926778c0a3cce1cc85dc46683b92b1271865bcf015a","impliedFormat":1},{"version":"68bd56c92c2bd7d2339457eb84d63e7de3bd56a69b25f3576e1568d21a162398","affectsGlobalScope":true,"impliedFormat":1},{"version":"3e93b123f7c2944969d291b35fed2af79a6e9e27fdd5faa99748a51c07c02d28","impliedFormat":1},{"version":"9d19808c8c291a9010a6c788e8532a2da70f811adb431c97520803e0ec649991","impliedFormat":1},{"version":"87aad3dd9752067dc875cfaa466fc44246451c0c560b820796bdd528e29bef40","impliedFormat":1},{"version":"4aacb0dd020eeaef65426153686cc639a78ec2885dc72ad220be1d25f1a439df","impliedFormat":1},{"version":"f0bd7e6d931657b59605c44112eaf8b980ba7f957a5051ed21cb93d978cf2f45","impliedFormat":1},{"version":"8db0ae9cb14d9955b14c214f34dae1b9ef2baee2fe4ce794a4cd3ac2531e3255","affectsGlobalScope":true,"impliedFormat":1},{"version":"15fc6f7512c86810273af28f224251a5a879e4261b4d4c7e532abfbfc3983134","impliedFormat":1},{"version":"58adba1a8ab2d10b54dc1dced4e41f4e7c9772cbbac40939c0dc8ce2cdb1d442","impliedFormat":1},{"version":"641942a78f9063caa5d6b777c99304b7d1dc7328076038c6d94d8a0b81fc95c1","impliedFormat":1},{"version":"714435130b9015fae551788df2a88038471a5a11eb471f27c4ede86552842bc9","impliedFormat":1},{"version":"855cd5f7eb396f5f1ab1bc0f8580339bff77b68a770f84c6b254e319bbfd1ac7","impliedFormat":1},{"version":"5650cf3dace09e7c25d384e3e6b818b938f68f4e8de96f52d9c5a1b3db068e86","impliedFormat":1},{"version":"1354ca5c38bd3fd3836a68e0f7c9f91f172582ba30ab15bb8c075891b91502b7","affectsGlobalScope":true,"impliedFormat":1},{"version":"27fdb0da0daf3b337c5530c5f266efe046a6ceb606e395b346974e4360c36419","impliedFormat":1},{"version":"2d2fcaab481b31a5882065c7951255703ddbe1c0e507af56ea42d79ac3911201","impliedFormat":1},{"version":"a192fe8ec33f75edbc8d8f3ed79f768dfae11ff5735e7fe52bfa69956e46d78d","impliedFormat":1},{"version":"ca867399f7db82df981d6915bcbb2d81131d7d1ef683bc782b59f71dda59bc85","affectsGlobalScope":true,"impliedFormat":1},{"version":"372413016d17d804e1d139418aca0c68e47a83fb6669490857f4b318de8cccb3","affectsGlobalScope":true,"impliedFormat":1},{"version":"9e043a1bc8fbf2a255bccf9bf27e0f1caf916c3b0518ea34aa72357c0afd42ec","impliedFormat":1},{"version":"b4f70ec656a11d570e1a9edce07d118cd58d9760239e2ece99306ee9dfe61d02","impliedFormat":1},{"version":"3bc2f1e2c95c04048212c569ed38e338873f6a8593930cf5a7ef24ffb38fc3b6","impliedFormat":1},{"version":"6e70e9570e98aae2b825b533aa6292b6abd542e8d9f6e9475e88e1d7ba17c866","impliedFormat":1},{"version":"f9d9d753d430ed050dc1bf2667a1bab711ccbb1c1507183d794cc195a5b085cc","impliedFormat":1},{"version":"9eece5e586312581ccd106d4853e861aaaa1a39f8e3ea672b8c3847eedd12f6e","impliedFormat":1},{"version":"47ab634529c5955b6ad793474ae188fce3e6163e3a3fb5edd7e0e48f14435333","impliedFormat":1},{"version":"37ba7b45141a45ce6e80e66f2a96c8a5ab1bcef0fc2d0f56bb58df96ec67e972","impliedFormat":1},{"version":"45650f47bfb376c8a8ed39d4bcda5902ab899a3150029684ee4c10676d9fbaee","impliedFormat":1},{"version":"fad4e3c207fe23922d0b2d06b01acbfb9714c4f2685cf80fd384c8a100c82fd0","affectsGlobalScope":true,"impliedFormat":1},{"version":"74cf591a0f63db318651e0e04cb55f8791385f86e987a67fd4d2eaab8191f730","impliedFormat":1},{"version":"5eab9b3dc9b34f185417342436ec3f106898da5f4801992d8ff38ab3aff346b5","impliedFormat":1},{"version":"12ed4559eba17cd977aa0db658d25c4047067444b51acfdcbf38470630642b23","affectsGlobalScope":true,"impliedFormat":1},{"version":"f3ffabc95802521e1e4bcba4c88d8615176dc6e09111d920c7a213bdda6e1d65","impliedFormat":1},{"version":"809821b8a065e3234a55b3a9d7846231ed18d66dd749f2494c66288d890daf7f","impliedFormat":1},{"version":"ae56f65caf3be91108707bd8dfbccc2a57a91feb5daabf7165a06a945545ed26","impliedFormat":1},{"version":"a136d5de521da20f31631a0a96bf712370779d1c05b7015d7019a9b2a0446ca9","impliedFormat":1},{"version":"c3b41e74b9a84b88b1dca61ec39eee25c0dbc8e7d519ba11bb070918cfacf656","affectsGlobalScope":true,"impliedFormat":1},{"version":"4737a9dc24d0e68b734e6cfbcea0c15a2cfafeb493485e27905f7856988c6b29","affectsGlobalScope":true,"impliedFormat":1},{"version":"36d8d3e7506b631c9582c251a2c0b8a28855af3f76719b12b534c6edf952748d","impliedFormat":1},{"version":"1ca69210cc42729e7ca97d3a9ad48f2e9cb0042bada4075b588ae5387debd318","impliedFormat":1},{"version":"f5ebe66baaf7c552cfa59d75f2bfba679f329204847db3cec385acda245e574e","impliedFormat":1},{"version":"ed59add13139f84da271cafd32e2171876b0a0af2f798d0c663e8eeb867732cf","affectsGlobalScope":true,"impliedFormat":1},{"version":"b7c5e2ea4a9749097c347454805e933844ed207b6eefec6b7cfd418b5f5f7b28","impliedFormat":1},{"version":"b1810689b76fd473bd12cc9ee219f8e62f54a7d08019a235d07424afbf074d25","impliedFormat":1}],"root":[[46,48]],"options":{"allowJs":true,"composite":true,"declaration":true,"declarationMap":true,"esModuleInterop":true,"module":1,"outDir":"./dist","rootDir":"./src","skipLibCheck":true,"sourceMap":true,"strict":true,"target":7},"referencedMap":[[97,1],[98,1],[99,2],[54,3],[100,4],[101,5],[102,6],[49,7],[52,8],[50,7],[51,7],[103,9],[104,10],[105,11],[106,12],[107,13],[108,14],[109,14],[110,15],[111,16],[112,17],[113,18],[55,7],[53,7],[114,19],[115,20],[116,21],[148,22],[117,23],[118,24],[119,25],[120,26],[121,27],[122,28],[123,29],[124,30],[125,31],[126,32],[127,32],[128,33],[129,7],[130,34],[132,35],[131,36],[133,37],[134,38],[135,39],[136,40],[137,41],[138,42],[139,43],[140,44],[141,45],[142,46],[143,47],[144,48],[145,49],[56,7],[57,7],[58,7],[96,50],[146,51],[147,52],[44,7],[45,7],[9,7],[8,7],[2,7],[10,7],[11,7],[12,7],[13,7],[14,7],[15,7],[16,7],[17,7],[3,7],[18,7],[19,7],[4,7],[20,7],[24,7],[21,7],[22,7],[23,7],[25,7],[26,7],[27,7],[5,7],[28,7],[29,7],[30,7],[31,7],[6,7],[35,7],[32,7],[33,7],[34,7],[36,7],[7,7],[37,7],[42,7],[43,7],[38,7],[39,7],[40,7],[41,7],[1,7],[74,53],[84,54],[73,53],[94,55],[65,56],[64,57],[93,58],[87,59],[92,60],[67,61],[81,62],[66,63],[90,64],[62,65],[61,58],[91,66],[63,67],[68,68],[69,7],[72,68],[59,7],[95,69],[85,70],[76,71],[77,72],[79,73],[75,74],[78,75],[88,58],[70,76],[71,77],[80,78],[60,79],[83,70],[82,68],[86,7],[89,80],[47,7],[48,81],[46,7]],"latestChangedDtsFile":"./dist/validation/index.d.ts","version":"5.9.3"}
+</file>
+
+<file path="pnpm-workspace.yaml">
+packages:
+  - 'packages/*'
+  - 'apps/*'
+</file>
+
+<file path="README.md">
+# Kanban Monorepo
+
+A professional full-stack TypeScript monorepo using pnpm workspaces, featuring a Next.js frontend and Express API backend.
+
+## 📋 Tech Stack
+
+- **Package Manager**: pnpm workspaces
+- **Language**: TypeScript (strict mode)
+- **Frontend**: Next.js 14+ with App Router
+- **Backend**: Express.js with TypeScript
+- **Node.js**: >=18.17.0
+
+## 📁 Structure
+
+```
+kanban-monorepo/
+├── apps/
+│   ├── api/                    # Express API backend
+│   │   ├── src/
+│   │   │   ├── routes/        # API endpoints
+│   │   │   ├── middleware/    # Express middleware
+│   │   │   ├── services/      # Business logic
+│   │   │   ├── controllers/   # Request handlers
+│   │   │   └── index.ts       # Server entry point
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   └── web/                    # Next.js frontend
+│       ├── src/
+│       │   ├── app/           # App router pages
+│       │   ├── components/    # React components
+│       │   ├── hooks/         # Custom React hooks
+│       │   ├── lib/           # Utilities
+│       │   └── types/         # Local types
+│       ├── public/            # Static assets
+│       ├── package.json
+│       └── tsconfig.json
+├── packages/
+│   ├── types/                 # Shared TypeScript types
+│   │   └── src/
+│   │       ├── index.ts
+│   │       ├── api/           # API types
+│   │       └── domain/        # Domain types
+│   ├── utils/                 # Shared utilities
+│   │   └── src/
+│   │       ├── index.ts
+│   │       ├── validation/
+│   │       ├── formatting/
+│   │       └── helpers/
+│   └── config/                # Shared configuration
+│       └── src/
+│           ├── index.ts
+│           └── constants.ts
+├── .gitignore
+├── package.json              # Root workspace config
+├── pnpm-workspace.yaml       # pnpm workspace definition
+├── tsconfig.json            # Root TypeScript config
+└── README.md
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18.17.0 or higher
+- pnpm 9.0.0 or higher
+
+### Installation
+
+```bash
+# Install pnpm globally (if not already installed)
+npm install -g pnpm
+
+# Install dependencies
+pnpm install
+```
+
+## 📝 Common Commands
+
+### Development
+
+```bash
+# Start all applications in development mode
+pnpm dev
+
+# Start only the frontend
+pnpm dev:web
+
+# Start only the API
+pnpm dev:api
+```
+
+### Building
+
+```bash
+# Build all packages and applications
+pnpm build
+
+# Build only frontend
+pnpm build:web
+
+# Build only API
+pnpm build:api
+```
+
+### Quality Checks
+
+```bash
+# Run linting across all packages
+pnpm lint
+
+# Type checking across all packages
+pnpm typecheck
+
+# Run tests across all packages
+pnpm test
+
+# Format code
+pnpm format
+```
+
+### Cleanup
+
+```bash
+# Clean all build artifacts and node_modules
+pnpm clean
+```
+
+## 📦 Package Structure
+
+### apps/api
+
+Express server with TypeScript providing REST API endpoints. Uses shared types and utilities from the workspace.
+
+Key features:
+
+- Type-safe route handlers
+- Middleware pipeline
+- Error handling
+- Request validation
+
+### apps/web
+
+Next.js 14 application with the new App Router. Consumes the API and uses shared types for type safety.
+
+Key features:
+
+- Server and client components
+- Data fetching strategies
+- Type-safe API calls
+- Responsive UI components
+
+### packages/types
+
+Shared TypeScript type definitions used across the entire monorepo. Prevents duplication and ensures consistency.
+
+### packages/utils
+
+Shared utility functions and helpers for validation, formatting, and common operations.
+
+### packages/config
+
+Centralized configuration constants used across all applications.
+
+## 🔗 Internal Dependencies
+
+Applications and packages reference each other using workspace protocols:
+
+```json
+{
+  "dependencies": {
+    "@kanban/types": "workspace:*",
+    "@kanban/utils": "workspace:*",
+    "@kanban/config": "workspace:*"
+  }
+}
+```
+
+## 🛠️ Development Workflow
+
+### Working on the API
+
+```bash
+cd apps/api
+pnpm dev
+```
+
+### Working on the Frontend
+
+```bash
+cd apps/web
+pnpm dev
+```
+
+### Adding a New Package
+
+1. Create the package directory: `packages/my-package`
+2. Add package.json with appropriate metadata
+3. Add TypeScript configuration
+4. Reference in other packages using `"@kanban/my-package": "workspace:*"`
+
+## 📄 TypeScript Configuration Strategy
+
+- **Root tsconfig.json**: Base configuration extended by all packages
+- **Package tsconfigs**: Extend root with package-specific settings
+- **Strict Mode**: Enabled globally for type safety
+- **Path Aliases**: Configured per package as needed (packages/utils → @kanban/utils)
+
+## 🔒 Type Safety
+
+All packages are configured with:
+
+- Strict TypeScript settings
+- Module resolution: bundler
+- Declaration and source maps enabled
+- Type checking on commit (recommended: husky + lint-staged)
+
+## 📦 Dependency Management
+
+### Monorepo Best Practices
+
+1. **Workspace Dependencies**: Use `workspace:*` for internal dependencies
+2. **External Dependencies**: Add to specific packages, not root
+3. **Dev Dependencies**: Keep with the package that uses them
+4. **Common Deps**: Use pnpm overrides in root package.json
+
+### pnpm Features Used
+
+- Automatic dedupe of dependencies
+- Strict peer dependency handling
+- Workspace protocol for internal references
+- Filtering for granular command execution (`--filter` flag)
+
+## 🚀 Deployment
+
+### Frontend Deployment
+
+The `apps/web` directory can be deployed to Vercel, Netlify, or any Next.js-compatible platform.
+
+### API Deployment
+
+The `apps/api` directory can be deployed to:
+
+- Node.js hosting (Heroku, Railway, etc.)
+- Serverless (AWS Lambda, Azure Functions, etc.)
+- Docker containers (build from root with Docker)
+
+## 📚 Additional Resources
+
+- [pnpm Workspaces Documentation](https://pnpm.io/workspaces)
+- [TypeScript Project References](https://www.typescriptlang.org/docs/handbook/project-references.html)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Express.js Documentation](https://expressjs.com/)
+
+## 💡 Best Practices
+
+1. **Type-First Development**: Define types first in `@kanban/types`
+2. **Code Reuse**: Extract shared logic into `@kanban/utils`
+3. **Consistent Styling**: Use monorepo-wide ESLint and Prettier configs
+4. **Cross-Package Testing**: Test integration between packages locally
+5. **Performance**: Monitor build times and dependency footprint
+6. **Documentation**: Keep package READMEs updated
+
+## 📝 License
+
+MIT
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true
+  }
+}
+</file>
+
+</files>

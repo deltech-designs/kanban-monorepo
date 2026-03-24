@@ -1,0 +1,42 @@
+{
+  "name": "@kanban/web",
+  "version": "1.0.0",
+  "description": "Next.js frontend for Kanban application",
+  "private": true,
+  "scripts": {
+    "predev": "pnpm --filter @kanban/types --filter @kanban/utils --filter @kanban/config build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "clean": "rm -rf .next"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@kanban/config": "workspace:*",
+    "@kanban/types": "workspace:*",
+    "@kanban/utils": "workspace:*",
+    "@tailwindcss/postcss": "^4.2.2",
+    "next": "^14.0.4",
+    "postcss": "^8.5.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/testing-library__jest-dom": "^6.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}
