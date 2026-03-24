@@ -23,6 +23,5 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 export * from './domain';
 export * from './api';
 
-
 export * from './domain';
 export * from './api';

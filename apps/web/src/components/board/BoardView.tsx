@@ -256,9 +256,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
       setColumns((prev) =>
         prev.map((col) => ({
           ...col,
-          tasks: col.tasks.map((t) =>
-            t.id === taskData.id ? { ...t, ...taskData } as Task : t
-          ),
+          tasks: col.tasks.map((t) => (t.id === taskData.id ? ({ ...t, ...taskData } as Task) : t)),
         }))
       );
     } else {
@@ -270,10 +268,10 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
         tags: taskData.tags || [],
         columnId: taskData.columnId || targetColumnId || 'todo',
       };
-      
+
       setColumns((prev) =>
         prev.map((col) => {
-          if (col.id === (newTask.columnId)) {
+          if (col.id === newTask.columnId) {
             return { ...col, tasks: [...col.tasks, newTask], count: (col.count || 0) + 1 };
           }
           return col;
@@ -308,7 +306,11 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
 
   return (
     <div className="flex flex-col h-full pl-8 pt-6 pr-8 pb-8 overflow-hidden bg-white">
-      <BoardHeader title={board.name} category="Projects" subCategory={board.description || 'General'} />
+      <BoardHeader
+        title={board.name}
+        category="Projects"
+        subCategory={board.description || 'General'}
+      />
 
       <div className="flex-1 overflow-x-auto custom-scrollbar pb-4">
         <DndContext

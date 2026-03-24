@@ -45,7 +45,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         setTitle(task.title);
         setDescription(task.description);
         setDateStr(task.dateStr);
-        const idx = MOCK_MEMBERS.findIndex(m => m.initials === task.assignee.initials);
+        const idx = MOCK_MEMBERS.findIndex((m) => m.initials === task.assignee.initials);
         setAssigneeIndex(idx >= 0 ? idx : 0);
         if (task.tags.length > 0) {
           setTagLabel(task.tags[0].label);
@@ -67,7 +67,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Construct tag object only if label is present
     const tags: TaskTag[] = tagLabel ? [{ label: tagLabel, color: tagColor }] : [];
 
@@ -105,21 +105,21 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       <form onSubmit={handleSave} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-          <Input 
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
-            placeholder="Task title" 
-            required 
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Task title"
+            required
             autoFocus
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <Textarea 
-            value={description} 
-            onChange={(e) => setDescription(e.target.value)} 
-            placeholder="Add details..." 
+          <Textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Add details..."
             rows={3}
           />
         </div>
@@ -127,43 +127,51 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-            <Input 
-              value={dateStr} 
-              onChange={(e) => setDateStr(e.target.value)} 
-              placeholder="e.g. Oct 24" 
+            <Input
+              value={dateStr}
+              onChange={(e) => setDateStr(e.target.value)}
+              placeholder="e.g. Oct 24"
             />
           </div>
           <div>
-             <label className="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
-             <select 
-               className="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm h-10 px-3 border"
-               value={assigneeIndex}
-               onChange={(e) => setAssigneeIndex(Number(e.target.value))}
-             >
-                {MOCK_MEMBERS.map((m, i) => (
-                  <option key={m.initials} value={i}>{m.initials}</option>
-                ))}
-             </select>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+            <select
+              className="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm h-10 px-3 border"
+              value={assigneeIndex}
+              onChange={(e) => setAssigneeIndex(Number(e.target.value))}
+            >
+              {MOCK_MEMBERS.map((m, i) => (
+                <option key={m.initials} value={i}>
+                  {m.initials}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-           <div>
-             <label className="block text-sm font-medium text-gray-700 mb-1">Tag Label</label>
-             <Input value={tagLabel} onChange={(e) => setTagLabel(e.target.value)} placeholder="Tag name" />
-           </div>
-           <div>
-             <label className="block text-sm font-medium text-gray-700 mb-1">Tag Color</label>
-             <select 
-                className="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm h-10 px-3 border"
-                value={tagColor}
-                onChange={(e) => setTagColor(e.target.value as TaskTag['color'])}
-             >
-                {AVAILABLE_TAG_COLORS.map(c => (
-                  <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
-                ))}
-             </select>
-           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tag Label</label>
+            <Input
+              value={tagLabel}
+              onChange={(e) => setTagLabel(e.target.value)}
+              placeholder="Tag name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tag Color</label>
+            <select
+              className="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm h-10 px-3 border"
+              value={tagColor}
+              onChange={(e) => setTagColor(e.target.value as TaskTag['color'])}
+            >
+              {AVAILABLE_TAG_COLORS.map((c) => (
+                <option key={c} value={c}>
+                  {c.charAt(0).toUpperCase() + c.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="flex justify-between pt-4 mt-6 border-t border-gray-100">
@@ -176,13 +184,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             >
               Delete
             </Button>
-          ) : <div />}
-          
+          ) : (
+            <div />
+          )}
+
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" className="bg-[#3b46f1] hover:bg-blue-700 text-white">Save Task</Button>
+            <Button type="submit" className="bg-[#3b46f1] hover:bg-blue-700 text-white">
+              Save Task
+            </Button>
           </div>
         </div>
       </form>
