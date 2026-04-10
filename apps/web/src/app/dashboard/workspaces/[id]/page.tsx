@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '../../../../components/ui/Button';
+import { Button } from '../../../../components/app/partials/Button';
 import { WorkspaceTools } from '../../../../components/dashboard/WorkspaceTools';
 
 interface WorkspaceDetailsPageProps {

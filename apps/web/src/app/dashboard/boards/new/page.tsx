@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { Textarea } from '@/components/ui/Textarea';
-import { Select } from '@/components/ui/Select';
+import { Input } from '@/components/app/partials/Input';
+import { Button } from '@/components/app/partials/Button';
+import { Textarea } from '@/components/app/partials/Textarea';
+import { Select } from '@/components/app/partials/Select';
 
 export default function CreateBoardPage() {
   const router = useRouter();

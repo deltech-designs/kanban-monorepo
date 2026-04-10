@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Input } from '../../../../components/ui/Input';
-import { Button } from '../../../../components/ui/Button';
+import { Input } from '../../../../components/app/partials/Input';
+import { Button } from '../../../../components/app/partials/Button';
 
 export default function CreateWorkspacePage() {
   const router = useRouter();

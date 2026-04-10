@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Input } from '@components/ui/Input';
-import { Button } from '@components/ui/Button';
+import { Input } from '@/components/app/partials/Input';
+import { Button } from '@/components/app/partials/Button';
+import { Alert } from '@/components/app/ui/Alert';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -72,27 +73,11 @@ export default function ForgotPassword() {
           </>
         ) : (
           <div className="mt-4 mb-8">
-            <div className="p-4 bg-green-50 text-green-700 rounded-lg border border-green-100 mb-6 text-sm text-left flex gap-3">
-              <svg
-                className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div>
-                <p className="font-semibold mb-1">Check your email</p>
-                <p>
-                  We've sent password reset instructions to <strong>{email}</strong>.
-                </p>
-              </div>
-            </div>
+            <Alert type="success" title="Check your email" className="mb-6">
+              <p>
+                We've sent password reset instructions to <strong>{email}</strong>.
+              </p>
+            </Alert>
 
             <Button
               type="button"

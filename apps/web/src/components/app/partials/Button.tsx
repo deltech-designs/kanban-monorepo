@@ -13,7 +13,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'flex items-center justify-center gap-2 p-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer';
+    'flex items-center justify-center gap-2 p-2.5 rounded-md text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
     primary: 'bg-blue-600 text-white border-none hover:bg-blue-700 shadow-sm font-semibold',

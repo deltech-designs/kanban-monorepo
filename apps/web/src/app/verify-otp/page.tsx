@@ -1,20 +1,29 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@components/ui/Button';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/app/partials/Button';
 import { OtpInput } from '@components/ui/OtpInput';
 import { WorkspaceSetupModal } from '@/components/onboarding/WorkspaceSetupModal';
 
 export default function VerifyOtp() {
+  const router = useRouter();
   const [otp, setOtp] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Implementation for verifying OTP will go here
-    console.log('Verifying OTP:', otp);
-    // Simulate successful verification for new user
-    setIsModalOpen(true);
+    setLoading(true);
+    try {
+      console.log('Verifying OTP:', otp);
+      setIsModalOpen(true);
+      // setTimeout(() => {
+      //   router.push('/dashboard/workspaces');
+      // }, 200);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -48,7 +57,7 @@ export default function VerifyOtp() {
             className="py-3.5 text-base bg-[#3b46f1] hover:bg-blue-700 rounded-xl"
             disabled={otp.length !== 4}
           >
-            Verify
+            {loading ? 'verifying...' : 'Verify'}
           </Button>
         </form>
 

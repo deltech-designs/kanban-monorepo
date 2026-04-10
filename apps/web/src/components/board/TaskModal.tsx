@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
-import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/app/partials/Input';
+import { Textarea } from '@/components/app/partials/Textarea';
+import { Button } from '@/components/app/partials/Button';
 import { Task, TaskTag, TaskAssignee } from './TaskCard';
 
 interface TaskModalProps {
