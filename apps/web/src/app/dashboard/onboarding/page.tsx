@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/app/partials/Button';
+import { Logo } from '@/components/ui/Logo';
 
 interface WorkspaceSetupModalProps {
   onClose: () => void;
@@ -29,9 +30,10 @@ export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClos
       <div className="w-full max-w-6xl min-h-screen px-8 py-12 flex flex-col relative justify-center">
         {/* Top Header Logotype */}
         <div className="absolute top-8 left-8">
-          <span className="font-extrabold text-gray-900 text-[19px] tracking-tight">
+          {/* <span className="font-extrabold text-gray-900 text-[19px] tracking-tight">
             HiramBoard
-          </span>
+          </span> */}
+          <Logo />
         </div>
 
         <div className="flex flex-col lg:flex-row items-stretch justify-between gap-16 lg:w-[85%] mx-auto h-auto my-auto relative z-10 w-full">
@@ -286,7 +288,7 @@ export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClos
 
         {/* Bottom Footer */}
         <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between text-[11px] font-bold tracking-[0.1em] text-gray-400 uppercase pt-4">
-          <div>© 2024 HIRAMBOARD</div>
+          <div>© {new Date().getFullYear()} HIRAMBOARD</div>
           <div className="flex items-center gap-8">
             <a href="#" className="hover:text-gray-900 transition-colors">
               Privacy

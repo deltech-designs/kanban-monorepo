@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/app/partials/Button';
@@ -17,10 +16,7 @@ export default function VerifyOtp() {
     setLoading(true);
     try {
       console.log('Verifying OTP:', otp);
-      setIsModalOpen(true);
-      // setTimeout(() => {
-      //   router.push('/dashboard/workspaces');
-      // }, 200);
+      // setIsModalOpen(true);
     } catch (error) {
       console.error(error);
     }
