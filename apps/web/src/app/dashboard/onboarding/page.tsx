@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/app/partials/Button';
-import { Logo } from '@/components/ui/Logo';
+import { Logo } from '@/components/app/partials/Logo';
+import { Input } from '@/components/app/partials/Input';
 
-interface WorkspaceSetupModalProps {
+interface OnboardingProps {
   onClose: () => void;
 }
 
-export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClose }) => {
+const Onboarding: React.FC<OnboardingProps> = ({ onClose }) => {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [workspaceName, setWorkspaceName] = useState('');
@@ -30,21 +31,18 @@ export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClos
       <div className="w-full max-w-6xl min-h-screen px-8 py-12 flex flex-col relative justify-center">
         {/* Top Header Logotype */}
         <div className="absolute top-8 left-8">
-          {/* <span className="font-extrabold text-gray-900 text-[19px] tracking-tight">
-            HiramBoard
-          </span> */}
           <Logo />
         </div>
 
         <div className="flex flex-col lg:flex-row items-stretch justify-between gap-16 lg:w-[85%] mx-auto h-auto my-auto relative z-10 w-full">
           {/* Left Column */}
-          <div className="flex-[0.8] max-w-[420px] pt-12 flex flex-col">
+          <div className="flex-[0.8] max-w-[320px] pt-12 flex flex-col">
             <h1 className="text-[44px] lg:text-[50px] font-bold text-gray-900 leading-[1.05] mb-6 tracking-tight">
               Let&apos;s set up your
               <br />
-              <span className="text-[#3b46f1]">Kinetic</span>
+              <span className="text-primary">Kinetic</span>
               <br />
-              <span className="text-[#3b46f1]">Workspace</span>.
+              <span className="text-primary">Workspace</span>.
             </h1>
             <p className="text-gray-600 text-[17px] mb-12 pr-4 leading-relaxed">
               Define your environment and start curating your projects with professional fluidity.
@@ -92,16 +90,6 @@ export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClos
                 </div>
               </div>
             </div>
-
-            {/* Info Box */}
-            <div className="bg-[#f0f3ff] rounded-2xl p-6 relative overflow-hidden mt-6 flex gap-4 items-start">
-              <div className="w-6 h-6 rounded-full bg-[#e2e8ff] text-[#3b46f1] flex items-center justify-center font-bold text-[13px] shrink-0 mt-0.5">
-                i
-              </div>
-              <p className="text-[14px] font-medium text-gray-600 leading-snug">
-                &quot;A well-named workspace is the anchor of every great workflow.&quot;
-              </p>
-            </div>
           </div>
 
           {/* Right Column (Card) */}
@@ -117,12 +105,12 @@ export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClos
                     What is your workspace name?
                   </h2>
                   <div className="mb-4">
-                    <input
-                      type="text"
-                      placeholder="e.g. Acme Design Studio"
+                    <Input
+                      placeholder="e.g Acme Design Studio"
                       className="w-full border border-gray-200 rounded-xl px-5 py-4 text-[16px] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#3b46f1]/20 focus:border-[#3b46f1] transition-all bg-transparent font-medium"
                       value={workspaceName}
-                      onChange={(e) => setWorkspaceName(e.target.value)}
+                      onChange={(ev) => setWorkspaceName(ev.target.value)}
+                      type="text"
                       autoFocus
                     />
                   </div>
@@ -244,64 +232,11 @@ export const WorkspaceSetupModal: React.FC<WorkspaceSetupModalProps> = ({ onClos
                 </Button>
               </div>
             </div>
-
-            {/* Social Proof Footer under card */}
-            <div className="mt-10 flex items-center justify-center lg:justify-end lg:pr-8 gap-3 text-[13px] text-gray-500">
-              <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full border-2 border-[#f7f9fc] bg-gray-200 overflow-hidden relative">
-                  <svg
-                    className="w-full h-full text-gray-400 mt-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
-                <div className="w-8 h-8 rounded-full border-2 border-[#f7f9fc] bg-gray-200 overflow-hidden relative">
-                  <svg
-                    className="w-full h-full text-gray-400 mt-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
-                <div className="w-8 h-8 rounded-full border-2 border-[#f7f9fc] bg-gray-200 overflow-hidden relative">
-                  <svg
-                    className="w-full h-full text-gray-400 mt-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
-                <div className="w-8 h-8 rounded-full border-2 border-[#f7f9fc] bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-600">
-                  +12k
-                </div>
-              </div>
-              <span className="font-medium text-[13px] text-gray-600">
-                Joined by 12,000+ curators this month
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Footer */}
-        <div className="absolute bottom-8 left-8 right-8 flex items-center justify-between text-[11px] font-bold tracking-[0.1em] text-gray-400 uppercase pt-4">
-          <div>© {new Date().getFullYear()} HIRAMBOARD</div>
-          <div className="flex items-center gap-8">
-            <a href="#" className="hover:text-gray-900 transition-colors">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-gray-900 transition-colors">
-              Terms
-            </a>
-            <a href="#" className="hover:text-gray-900 transition-colors">
-              Support
-            </a>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+export default Onboarding;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/app/partials/Button';
 import { OtpInput } from '@components/ui/OtpInput';
-import { WorkspaceSetupModal } from '@/components/onboarding/WorkspaceSetupModal';
+// import Onboarding from '../dashboard/onboarding';
 
 export default function VerifyOtp() {
   const router = useRouter();
@@ -16,9 +16,13 @@ export default function VerifyOtp() {
     setLoading(true);
     try {
       console.log('Verifying OTP:', otp);
-      // setIsModalOpen(true);
+      setTimeout(() => {
+        router.push('/dashboard/onboarding');
+      }, 2000);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,7 +86,7 @@ export default function VerifyOtp() {
         </div>
       </div>
 
-      {isModalOpen && <WorkspaceSetupModal onClose={() => setIsModalOpen(false)} />}
+      {/* {isModalOpen && <WorkspaceSetupModal onClose={() => setIsModalOpen(false)} />} */}
     </div>
   );
 }

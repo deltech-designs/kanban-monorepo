@@ -1,5 +1,5 @@
 import React from 'react';
-import { Logo } from '../../../ui/Logo';
+import { Logo } from '../../partials/Logo';
 import { TitleText } from '../../partials/TitleText';
 import { DescriptionText } from '../../partials/DescriptionText';
 

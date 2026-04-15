@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sidebar } from '../../components/app/layout/Sidebar';
-import { TopNav } from '../../components/dashboard/TopNav';
+import { TopNav } from '../../components/app/features/dashboard/TopNav';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

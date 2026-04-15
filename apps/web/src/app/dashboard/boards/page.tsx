@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/app/partials/Button';
-import { BoardCard } from '@/components/dashboard/BoardCard';
+import { BoardCard } from '@/components/app/features/dashboard/BoardCard';
 import { Board } from '@kanban/types';
 
 // Mock boards data

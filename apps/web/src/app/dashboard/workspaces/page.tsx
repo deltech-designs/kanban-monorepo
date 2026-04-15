@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '../../../components/app/partials/Button';
-import { WorkspaceCard } from '../../../components/dashboard/WorkspaceCard';
+import { WorkspaceCard } from '../../../components/app/features/dashboard/WorkspaceCard';
 import { Workspace } from '@kanban/types';
 
 // Mock workspace data

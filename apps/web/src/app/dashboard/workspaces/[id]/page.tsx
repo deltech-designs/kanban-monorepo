@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '../../../../components/app/partials/Button';
-import { WorkspaceTools } from '../../../../components/dashboard/WorkspaceTools';
+import { WorkspaceTools } from '../../../../components/app/features/dashboard/WorkspaceTools';
 
 interface WorkspaceDetailsPageProps {
   params: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { SocialLoginButtons } from '@components/ui/SocialLoginButtons';
-import { AuthDivider } from '@components/ui/AuthDivider';
+import { AuthDivider } from '@/components/app/ui/AuthDivider';
 import { DescriptionText } from '@/components/app/partials/DescriptionText';
 import { TitleText } from '@/components/app/partials/TitleText';
 
