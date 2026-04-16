@@ -94,7 +94,7 @@ export default function ForgotPassword() {
         <div className="pt-6 border-t border-gray-100 w-full text-center">
           <p className="text-[14px] text-gray-500 m-0">
             Remembered your password?{' '}
-            <Link href="/login" className="text-blue-600 font-medium hover:underline text-[14px]">
+            <Link href="/auth/login" className="text-blue-600 font-medium hover:underline text-[14px]">
               Back to Login
             </Link>
           </p>
@@ -102,7 +102,7 @@ export default function ForgotPassword() {
       </div>
 
       <div className="mt-10 text-[13px] text-gray-400 absolute bottom-10">
-        © {new Date().getFullYear()} KanbanFlow Inc. All rights reserved.
+        © {new Date().getFullYear()} HiramBoard Inc. All rights reserved.
       </div>
     </div>
   );

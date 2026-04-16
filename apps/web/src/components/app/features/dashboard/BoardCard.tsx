@@ -5,57 +5,101 @@ import { Board } from '@kanban/types';
 interface BoardCardProps {
   board: Board;
   taskCount?: number;
-  progress?: number;
+  category?: string;
+  categoryColor?: 'blue' | 'orange' | 'gray';
+  membersCount?: number;
 }
 
-export function BoardCard({ board, taskCount = 0, progress = 0 }: BoardCardProps) {
+const colorMap = {
+  blue: { bg: 'bg-[#EBF4FF]', text: 'text-[#4A90E2]', decoration: 'from-[#EBF4FF]/40' },
+  orange: { bg: 'bg-[#FFF0E5]', text: 'text-[#F5A623]', decoration: 'from-[#FFF0E5]/60' },
+  gray: { bg: 'bg-[#F1F5F9]', text: 'text-[#64748B]', decoration: 'from-[#F1F5F9]/80' },
+};
+
+export function BoardCard({
+  board,
+  taskCount = 0,
+  category = 'CATEGORY',
+  categoryColor = 'gray',
+  membersCount = 1,
+}: BoardCardProps) {
+  const colors = colorMap[categoryColor] || colorMap.gray;
+
   return (
     <Link href={`/dashboard/boards/${board.id}`} className="block group h-full">
-      <div className="bg-white border border-gray-100/80 rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-[#4A3CF0]/20 transition-all h-full flex flex-col">
-        <div className="flex justify-between items-start mb-4">
-          <div className="w-10 h-10 rounded-xl bg-[#F8FAFC] flex items-center justify-center text-[#4A3CF0] group-hover:bg-[#EEF2FF] group-hover:scale-110 transition-all">
+      <div className="relative bg-white border border-gray-100 rounded-3xl p-7 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-0.5 transition-all h-[240px] flex flex-col overflow-hidden">
+        {/* Top-right corner decoration shape */}
+        <div
+          className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${colors.decoration} to-transparent rounded-bl-full opacity-50 transition-transform group-hover:scale-110 pointer-events-none -z-0`}
+        />
+
+        <div className="relative z-10 flex justify-between items-start mb-4">
+          <span
+            className={`px-2.5 py-1 rounded-full text-[10px] uppercase font-bold tracking-wider ${colors.bg} ${colors.text}`}
+          >
+            {category}
+          </span>
+          <button
+            className="text-gray-400 hover:text-gray-600 transition-colors bg-white/50 backdrop-blur-sm rounded-full p-1"
+            aria-label="Board options"
+            onClick={(e) => e.preventDefault()}
+          >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
               />
             </svg>
-          </div>
-          <span className="px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider bg-gray-50 text-gray-500">
-            Updated {new Date(board.updatedAt).toLocaleDateString()}
-          </span>
+          </button>
         </div>
 
-        <h3 className="font-bold text-[16px] text-gray-900 mb-2 truncate">{board.name}</h3>
-        <p className="text-[13px] text-gray-500 leading-relaxed mb-6 line-clamp-2 min-h-10 grow">
+        <h3 className="relative z-10 font-bold text-lg leading-tight text-[#1e293b] mb-1.5 ">
+          {board.name}
+        </h3>
+        <p className="relative z-10 text-[14px] text-[#64748b] leading-relaxed line-clamp-2 min-h-[2.75rem]">
           {board.description}
         </p>
 
-        <div className="mt-auto flex items-center justify-between text-gray-400 text-[12px] font-medium pt-4 border-t border-gray-50">
+        <div className="relative z-10 mt-auto flex items-center justify-between text-[#64748b] text-[13px] font-medium pt-5">
+          {/* Avatar Group */}
+          <div className="flex items-center -space-x-2 relative z-0">
+            <img
+              src="https://i.pravatar.cc/150?img=32"
+              alt="Member"
+              className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm relative z-20"
+            />
+            {membersCount > 1 && (
+              <img
+                src={`https://i.pravatar.cc/150?u=${board.id}`}
+                alt="Member"
+                className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm relative z-10"
+              />
+            )}
+            {membersCount > 2 && (
+              <div className="w-7 h-7 rounded-full border-2 border-white bg-[#f8fafc] flex items-center justify-center text-[10px] font-bold text-[#64748b] shadow-sm relative z-0">
+                +{membersCount - 2}
+              </div>
+            )}
+          </div>
+
           <div className="flex items-center gap-1.5">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-[15px] h-[15px] text-gray-400/80"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                strokeWidth={1.8}
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 14h6m-6 4h6m-3-10h.01"
               />
             </svg>
             {taskCount} Tasks
           </div>
-          {progress > 0 && (
-            <div
-              className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden"
-              title={`${progress}% Complete`}
-            >
-              <div
-                className="h-full bg-linear-to-r from-[#4A3CF0] to-[#878DFD]"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          )}
         </div>
       </div>
     </Link>

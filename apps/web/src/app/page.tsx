@@ -18,10 +18,10 @@ export default function LandingPage() {
           <span className="text-xl font-bold text-gray-900 tracking-tight">Hiram Board</span>
         </div>
         <nav className="flex items-center gap-4">
-          <Link href="/login" tabIndex={-1}>
+          <Link href="/auth/login" tabIndex={-1}>
             <Button variant="outline">Log in</Button>
           </Link>
-          <Link href="/signup" tabIndex={-1}>
+          <Link href="/auth/signup" tabIndex={-1}>
             <Button variant="primary">Sign up</Button>
           </Link>
         </nav>

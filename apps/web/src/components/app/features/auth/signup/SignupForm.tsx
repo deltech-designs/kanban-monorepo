@@ -3,23 +3,42 @@
 import React, { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/app/partials/Logo';
-import {useRouter} from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { TitleText } from '@/components/app/partials/TitleText';
 import { DescriptionText } from '@/components/app/partials/DescriptionText';
 import { Input } from '@/components/app/partials/Input';
 import { Button } from '@/components/app/partials/Button';
 import { AuthDivider } from '@/components/app/ui/AuthDivider';
+import { Sign } from 'crypto';
+
+interface SignUpFormFields {
+  fullname: string;
+  email: string;
+  password: string;
+}
 
 export function SignupForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [] = useState({})
+  const [fields, setFields] = useState<SignUpFormFields>({
+    fullname: '',
+    email: '',
+    password: '',
+  });
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
-    // TODO: wire up signup API call
-    setTimeout(() => setIsLoading(false), 1500);
+    try{
+      setTimeout(() =>{
+        router.push('/auth/verify-otp')
+      }, 1500);
+
+    }catch(error){
+      console.error(error)
+    }finally{
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -39,7 +58,7 @@ export function SignupForm() {
         type="button"
         variant="outline"
         fullWidth
-        className="py-2.5 text-sm text-gray-700 border-gray-300 bg- hover:bg-gray-50"
+        className="py-2.5 text-sm text-gray-700 border-gray-300 bg-primary-light hover:bg-gray-50"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -74,6 +93,11 @@ export function SignupForm() {
           label="Full Name"
           type="text"
           placeholder="Jane Doe"
+          name="fullname"
+          value={fields.fullname}
+          onChange={(ev) => {
+            setFields((prev) => ({ ...prev, fullname: ev.target.value }));
+          }}
           autoComplete="name"
           required
         />
@@ -81,7 +105,12 @@ export function SignupForm() {
           id="email"
           label="Email"
           type="email"
+          name="email"
           placeholder="jane@example.com"
+          value={fields.email}
+          onChange={(ev) => {
+            setFields((prev) => ({ ...prev, fullname: ev.target.value }));
+          }}
           autoComplete="email"
           required
         />
@@ -89,6 +118,11 @@ export function SignupForm() {
           id="password"
           label="Password"
           type="password"
+          name="password"
+          value={fields.password}
+          onChange={(ev) => {
+            setFields((prev) => ({ ...prev, fullname: ev.target.value }));
+          }}
           placeholder="Create a strong password"
           autoComplete="new-password"
           required
