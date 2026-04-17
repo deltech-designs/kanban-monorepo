@@ -15,56 +15,100 @@ import {
   DropAnimation,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { BoardHeader } from '@/components/board/BoardHeader';
-import { BoardColumn, ColumnData } from '@/components/board/BoardColumn';
-import { Task } from '@/components/board/TaskCard';
-import { TaskModal } from '@/components/board/TaskModal';
-import { SortableTaskItem } from '@/components/board/SortableTaskItem';
+import { BoardHeader } from '@/components/app/features/dashboard/board/BoardHeader';
+import { BoardColumn, ColumnData } from '@/components/app/features/dashboard/board/BoardColumn';
+import { Task } from '@/components/app/features/dashboard/task/TaskCard';
+import { TaskModal } from '@/components/app/features/dashboard/task/TaskModal';
+import { SortableTaskItem } from '@/components/app/features/dashboard/SortableTaskItem';
 import { Board } from '@kanban/types';
 
 interface BoardViewProps {
   boardId: string;
 }
 
+// Mock board database that matches the boards list
+const boardDatabase: Record<string, Board> = {
+  '1': {
+    id: '1',
+    name: 'Q4 Global Launch',
+    description: 'Tracking omnichannel marketing assets and press releases.',
+    workspaceId: 'workspace-1',
+    userId: 'user-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  '2': {
+    id: '2',
+    name: 'Brand Evolution',
+    description: 'Visual identity refinement and new typography standards.',
+    workspaceId: 'workspace-1',
+    userId: 'user-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  '3': {
+    id: '3',
+    name: 'Content Calendar',
+    description: 'Weekly social media scheduling and blog production pipeline.',
+    workspaceId: 'workspace-1',
+    userId: 'user-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  '4': {
+    id: '4',
+    name: 'Mobile App UI',
+    description: 'Iteration on version 2.4 mobile experience and flow maps.',
+    workspaceId: 'workspace-1',
+    userId: 'user-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  '5': {
+    id: '5',
+    name: 'User Feedback',
+    description: 'Aggregating quarterly survey results and interview notes.',
+    workspaceId: 'workspace-1',
+    userId: 'user-1',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+};
+
 export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
   // Mock fetching board details
   const [board, setBoard] = useState<Board | null>(null);
 
   useEffect(() => {
-    // Simulate API call
-    setBoard({
-      id: boardId,
-      name: 'Website Redesign',
-      description: 'Marketing site overhaul',
-      workspaceId: 'workspace-1',
-      userId: 'user-1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    // Simulate API call - fetch board data from database based on boardId
+    const boardData = boardDatabase[boardId];
+    if (boardData) {
+      setBoard(boardData);
+    }
   }, [boardId]);
 
   const [columns, setColumns] = useState<ColumnData[]>([
     {
-      id: 'todo',
-      title: 'To Do',
-      count: 2,
+      id: 'backlog',
+      title: 'Backlog',
+      count: 8,
       tasks: [
         {
           id: 'task-1',
-          columnId: 'todo',
-          title: 'Design homepage',
-          description: 'Create mockups.',
+          columnId: 'backlog',
+          title: 'Refactor API middleware for auth',
+          description: '',
           dateStr: 'Oct 24',
-          tags: [{ label: 'Design', color: 'orange' }],
+          tags: [],
           assignee: { initials: 'JD', avatarColor: 'bg-indigo-100 text-indigo-700' },
         },
         {
           id: 'task-2',
-          columnId: 'todo',
-          title: 'User Feedback',
-          description: 'Analyze survey results.',
-          dateStr: 'Today',
-          tags: [{ label: 'Research', color: 'blue' }],
+          columnId: 'backlog',
+          title: 'Documentation for Webhooks',
+          description: '',
+          dateStr: 'Oct 29',
+          tags: [],
           assignee: { initials: 'AS', avatarColor: 'bg-cyan-100 text-cyan-700' },
         },
       ],
@@ -72,32 +116,57 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
     {
       id: 'in-progress',
       title: 'In Progress',
-      count: 1,
+      count: 3,
       tasks: [
         {
           id: 'task-3',
           columnId: 'in-progress',
-          title: 'Build navbar',
-          description: 'Sticky nav.',
-          dateStr: 'Oct 28',
-          tags: [{ label: 'Dev', color: 'teal' }],
-          assignee: { initials: 'BW', avatarColor: 'bg-orange-100 text-orange-700' },
+          title: 'Design System Tonal Layering',
+          description: '',
+          dateStr: 'Today',
+          tags: [{ label: 'FRONTEND', color: 'blue' }],
+          assignee: { initials: 'BW', avatarColor: 'bg-blue-100 text-blue-700' },
+        },
+        {
+          id: 'task-4',
+          columnId: 'in-progress',
+          title: 'OAuth2 Flow Implementation',
+          description: '',
+          dateStr: 'Yesterday',
+          tags: [],
+          assignee: { initials: 'RH', avatarColor: 'bg-rose-100 text-rose-700' },
+        },
+      ],
+    },
+    {
+      id: 'review',
+      title: 'Review',
+      count: 2,
+      tasks: [
+        {
+          id: 'task-5',
+          columnId: 'review',
+          title: 'Mobile Responsive Layouts',
+          description: '',
+          dateStr: 'Oct 21',
+          tags: [],
+          assignee: { initials: 'UD', avatarColor: 'bg-purple-100 text-purple-700' },
         },
       ],
     },
     {
       id: 'done',
       title: 'Done',
-      count: 1,
+      count: 14,
       tasks: [
         {
-          id: 'task-4',
+          id: 'task-6',
           columnId: 'done',
-          title: 'Testing',
-          description: 'Mobile responsive.',
-          dateStr: 'Oct 20',
-          tags: [{ label: 'Quality', color: 'gray' }],
-          assignee: { initials: 'RH', avatarColor: 'bg-gray-200 text-gray-700' },
+          title: 'Finalize Brand Guidelines',
+          description: '',
+          dateStr: 'Oct 15',
+          tags: [],
+          assignee: { initials: 'ML', avatarColor: 'bg-green-100 text-green-700' },
         },
       ],
     },
@@ -305,14 +374,12 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
   if (!board) return null;
 
   return (
-    <div className="flex flex-col h-full pl-8 pt-6 pr-8 pb-8 overflow-hidden bg-white">
-      <BoardHeader
-        title={board.name}
-        category="Projects"
-        subCategory={board.description || 'General'}
-      />
+    <div className="flex flex-col h-full bg-slate-50/30 overflow-hidden">
+      <div className="flex-none px-8 py-3 bg-white border-b border-gray-100">
+        <BoardHeader title={board.name} category="Workspaces" subCategory="Product" />
+      </div>
 
-      <div className="flex-1 overflow-x-auto custom-scrollbar pb-4">
+      <div className="flex-1 overflow-x-auto custom-scrollbar pb-4 px-8 pt-4">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
@@ -320,7 +387,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-6 items-start h-full">
+          <div className="flex gap-4 items-start h-full p-1 custom-scrollbar">
             {columns.map((col) => (
               <BoardColumn
                 key={col.id}
@@ -329,13 +396,6 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
                 onAddTask={handleAddTask}
               />
             ))}
-
-            <button
-              onClick={handleAddColumn}
-              className="min-w-85 h-12.5 border-2 border-dashed border-gray-200 rounded-2xl flex items-center justify-center text-gray-400 font-semibold hover:border-gray-300 hover:text-gray-500 transition-colors shrink-0"
-            >
-              + Add Column
-            </button>
           </div>
 
           <DragOverlay dropAnimation={dropAnimation}>

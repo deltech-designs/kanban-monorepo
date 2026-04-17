@@ -3,8 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/app/partials/Button';
-import { BoardCard } from '@/components/app/features/dashboard/BoardCard';
+import { BoardCard } from '@/components/app/features/dashboard/board/BoardCard';
 import { Board } from '@kanban/types';
+import {Plus} from 'lucide-react'
 
 // Mock boards data
 const initialBoards: (Board & { 
@@ -101,9 +102,6 @@ export default function BoardsPage() {
             Manage your flow and track real-time progress below.
           </p>
         </div>
-        {/* <Button className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all">
-          <span className="mr-0.5">+</span> Create New Board
-        </Button> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -123,22 +121,8 @@ export default function BoardsPage() {
           href="/dashboard/boards/new"
           className="group flex flex-col items-center justify-center p-8 bg-slate-50/50 rounded-2xl transition-all h-full min-h-[240px] border-2 border-dashed border-slate-300 hover:bg-blue-50/50 hover:border-blue-400 hover:shadow-sm"
         >
-          <div className="w-14 h-14 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center mb-5 group-hover:scale-110 group-hover:border-blue-200 transition-all duration-300 ease-out">
-            <svg
-              className="w-6 h-6 text-slate-400 group-hover:text-blue-600 transition-colors"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </div>
-          <span className="font-semibold text-[16px] text-slate-700 group-hover:text-blue-700 transition-colors mb-1">Create New Board</span>
+          <Plus className="text-primary bg-white h-16 w-16 rounded-full mb-2 p-2 text-2xl" />
+          <span className="font-bold text-[16px] text-slate-700 group-hover:text-blue-700 transition-colors mb-1">Create New Board</span>
           <span className="text-[13px] text-slate-500 text-center">Start a fresh project flow</span>
         </Link>
       </div>

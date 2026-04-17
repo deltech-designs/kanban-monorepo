@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { TaskCard, Task } from './TaskCard';
+import { TaskCard, Task } from './task/TaskCard';
 
 interface SortableTaskItemProps {
   task: Task;

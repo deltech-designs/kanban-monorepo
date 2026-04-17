@@ -1,6 +1,6 @@
 'use client';
 
-import React, {} from 'react';
+import React, {useState} from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -133,8 +133,6 @@ const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   }
 
     const handleLogout = () => {
-      // Implement actual logout logic here (e.g., clearing tokens)
-      setIsProfileModalOpen(false);
       router.push('/auth/login');
     };
 
@@ -286,7 +284,7 @@ const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
             aria-label="Logout"
             onClick={handleLogout}
           >
-            <LogoutIcon className="w-4 h-4" />
+            <LogoutIcon className="w-2 h-2" />
           </button>
         </div>
       </div>
