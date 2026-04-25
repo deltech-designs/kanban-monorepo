@@ -29,13 +29,12 @@ export const BoardHeader: React.FC<BoardHeaderProps> = ({ title, category, subCa
           <span className="text-[10px] font-medium text-gray-400 uppercase whitespace-nowrap">
             {category}
           </span>
-          <span className="text-[10px] font-medium text-blue-600 uppercase whitespace-nowrap">
+          {/* <span className="text-[10px] font-medium text-blue-600 uppercase whitespace-nowrap">
             {subCategory}
-          </span>
+          </span> */}
           <div className="h-3 w-px bg-gray-200" />
           <div className="flex items-center gap-1 min-w-0">
             <h1 className="text-lg font-bold text-gray-900 truncate">{title}</h1>
-           
           </div>
         </div>
       </div>

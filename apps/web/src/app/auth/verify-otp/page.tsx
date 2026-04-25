@@ -17,7 +17,7 @@ export default function VerifyOtp() {
     try {
       console.log('Verifying OTP:', otp);
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push('/workspace');
       }, 2000);
     } catch (error) {
       console.error(error);

@@ -19,6 +19,7 @@ import { BoardHeader } from '@/components/app/features/dashboard/board/BoardHead
 import { BoardColumn, ColumnData } from '@/components/app/features/dashboard/board/BoardColumn';
 import { Task } from '@/components/app/features/dashboard/task/TaskCard';
 import { TaskModal } from '@/components/app/features/dashboard/task/TaskModal';
+import { TaskDetailsSidebar } from '@/components/app/features/dashboard/task/TaskDetailsSidebar';
 import { SortableTaskItem } from '@/components/app/features/dashboard/SortableTaskItem';
 import { Board } from '@kanban/types';
 
@@ -409,12 +410,16 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
       </div>
 
       <TaskModal
-        isOpen={isModalOpen}
+        isOpen={isModalOpen && !editingTask}
         onClose={() => setIsModalOpen(false)}
-        task={editingTask}
         columnId={targetColumnId}
         onSave={handleSaveTask}
-        onDelete={handleDeleteTask}
+      />
+      <TaskDetailsSidebar
+        isOpen={isModalOpen && !!editingTask}
+        onClose={() => setIsModalOpen(false)}
+        task={editingTask}
+        onSave={handleSaveTask}
       />
     </div>
   );

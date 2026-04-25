@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../app/partials/Button';
+import { Button } from '../partials/Button';
 
 export function SocialLoginButtons() {
   return (

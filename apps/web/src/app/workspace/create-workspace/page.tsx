@@ -109,7 +109,7 @@ export default function InviteTeamPage() {
 
         <div className="mt-4 text-center">
           <Link
-            href="/dashboard"
+            href="/dashboard/boards"
             className="text-[16px] text-[#7A879D] transition hover:text-[#616E84]"
           >
             Skip for now

@@ -15,9 +15,7 @@ export default function CreateBoardModal() {
     router.back();
   };
 
-  
-
-  const handleCreate = (e: React.FormEvent) => {
+    const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!boardName.trim()) return;
     // In a real app, you would create the board via API

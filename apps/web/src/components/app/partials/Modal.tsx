@@ -1,14 +1,23 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
 
+type ModalSize = 'sm' | 'md' | 'lg';
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  size?: ModalSize;
   children: React.ReactNode;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const sizeClass: Record<ModalSize, string> = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+};
+
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, size = 'md', children }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,7 +44,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div
         ref={modalRef}
-        className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200"
+        className={`bg-white rounded-xl shadow-xl w-full ${sizeClass[size]} overflow-hidden animate-in fade-in zoom-in duration-200`}
         role="dialog"
         aria-modal="true"
       >
