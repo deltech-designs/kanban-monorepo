@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/app/partials/Button';
-import { OtpInput } from '@components/ui/OtpInput';
+import { OtpInput } from '@/components/app/ui/OtpInput';
 // import Onboarding from '../dashboard/onboarding';
 
 export default function VerifyOtp() {

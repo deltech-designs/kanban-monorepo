@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { SlideOver } from '@/components/app/partials/SlideOver';
 import { Avatar } from '@/components/app/partials/Avatar';
+import { StatusSelect } from '@/components/app/partials/StatusSelect';
+import { AvatarSelect } from '@/components/app/partials/AvatarSelect';
+import { DatePicker } from '@/components/app/partials/DatePicker';
 import { Task, TaskAssignee } from './TaskCard';
 
 interface TaskDetailsSidebarProps {
@@ -76,7 +79,7 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
       columnId: status,
       title: title.trim(),
       description,
-      dateStr: dueDate || 'No date',
+      dateStr: dueDate || '',
       assignee,
       tags: task?.tags ?? [],
     });
@@ -93,16 +96,16 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
         <div className="flex-1 overflow-y-auto px-8 pt-8 pb-32">
           {/* Header */}
           <div className="flex items-center justify-between pb-6">
-            <div className="flex items-center gap-2 text-slate-500">
+            {/* <div className="flex items-center gap-2 text-slate-500">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <span className="text-sm font-medium tracking-wide">{task?.id || 'NEW-101'}</span>
-            </div>
+            </div> */}
             <button
               type="button"
               onClick={onClose}
-              className="p-1 text-slate-400 hover:text-slate-600 transition-colors"
+              className="p-1 text-slate-400 hover:text-slate-600 transition-colors ml-auto"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -130,25 +133,12 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                   </svg>
                 }
               />
-              <div className="relative inline-block">
-                <select
+              <div className="w-48">
+                <StatusSelect
+                  options={STATUS_OPTIONS}
                   value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                >
-                  {STATUS_OPTIONS.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-                <div className={`inline-flex items-center gap-2 ${activeStatus.bgColor} ${activeStatus.textColor} px-4 py-1.5 rounded-full text-[13px] font-semibold transition-colors`}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: activeStatus.color }}></span>
-                  {activeStatus.label}
-                  <svg className="w-3.5 h-3.5 ml-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
+                  onChange={setStatus}
+                />
               </div>
             </div>
 
@@ -162,37 +152,12 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                   </svg>
                 }
               />
-              <div className="relative inline-block">
-                <select
+              <div className="w-64">
+                <AvatarSelect
+                  options={MOCK_MEMBERS}
                   value={assigneeIndex}
-                  onChange={(e) => setAssigneeIndex(Number(e.target.value))}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                >
-                  {MOCK_MEMBERS.map((m, i) => (
-                    <option key={m.initials} value={i}>
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="inline-flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-3 py-2 hover:bg-slate-50 transition-colors w-64 shadow-sm">
-                  <Avatar name={activeAssignee.name} src={activeAssignee.avatarSrc} size="sm" />
-                  <div className="flex flex-col items-start flex-1 text-left">
-                    <span className="font-bold text-[13px] text-gray-900 leading-tight">
-                      {activeAssignee.name}
-                    </span>
-                    <span className="text-[11px] text-slate-500 leading-tight font-medium mt-0.5">
-                      {activeAssignee.role}
-                    </span>
-                  </div>
-                  <div className="flex flex-col text-slate-400">
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
-                    </svg>
-                    <svg className="w-3 h-3 -mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
+                  onChange={setAssigneeIndex}
+                />
               </div>
             </div>
 
@@ -206,19 +171,11 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                   </svg>
                 }
               />
-              <div className="relative inline-block">
-                <input
-                  type="date"
+              <div className="w-48">
+                <DatePicker
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
-                <div className="inline-flex items-center gap-2.5 bg-slate-50 border border-transparent rounded-lg px-3 py-2 text-[13px] font-medium text-gray-800 hover:bg-slate-100 transition-colors w-48">
-                  <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>{dueDate ? new Date(dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Set date...'}</span>
-                </div>
               </div>
             </div>
 
@@ -268,14 +225,57 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                 </button>
               </div>
             </div>
+
+            {/* COMMENTS */}
+            <div>
+              <SectionLabel
+                text="COMMENTS"
+                icon={
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                }
+              />
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-300 to-slate-500 border-2 border-white shadow-sm"></div>
+                <input
+                  placeholder="Add a comment..."
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-500 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/15 transition-all"
+                />
+                <button type="button" className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-8 8-4-4" />
+                  </svg>
+                </button>
+              </div>
+              <div className="mt-3 space-y-4">
+                {[
+                  { name: 'Steve Rogers', time: '2 days ago', text: 'Looks good, but we should probably add proper error boundaries on the client side before merging.', initials: 'SR', avatarColor: 'bg-red-100 text-red-700' },
+                  { name: 'Natasha Romanoff', time: '4 days ago', text: 'The tests are green. Ready for QA.', initials: 'NR', avatarColor: 'bg-pink-100 text-pink-700' },
+                ].map((comment, idx) => (
+                  <div key={idx} className="flex items-start gap-3 pt-4 border-t border-slate-100">
+                    <div className={`w-9 h-9 rounded-full ${comment.avatarColor} border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold shrink-0`}>
+                      {comment.initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-xs font-bold text-gray-900">{comment.name}</span>
+                        <span className="text-xs text-slate-400">{comment.time}</span>
+                      </div>
+                      <p className="text-xs text-slate-500 leading-relaxed">{comment.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-6 z-20">
+        <div className="bg-white border-t border-gray-100 p-2">
           <button
             type="submit"
-            className="w-full bg-[#4A90E2] text-white font-bold rounded-lg py-3 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30 active:scale-[0.98]"
+            className="w-full bg-[#4A90E2] text-white font-bold rounded-lg py-2 hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30 active:scale-[0.98]"
           >
             Save Changes
           </button>

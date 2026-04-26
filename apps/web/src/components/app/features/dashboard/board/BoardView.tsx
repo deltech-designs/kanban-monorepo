@@ -76,6 +76,25 @@ const boardDatabase: Record<string, Board> = {
   },
 };
 
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+const tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate() + 1);
+const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+const nextWeek = new Date(today);
+nextWeek.setDate(nextWeek.getDate() + 7);
+const nextWeekStr = nextWeek.toISOString().split('T')[0];
+
+const lastWeek = new Date(today);
+lastWeek.setDate(lastWeek.getDate() - 7);
+const lastWeekStr = lastWeek.toISOString().split('T')[0];
+
 export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
   // Mock fetching board details
   const [board, setBoard] = useState<Board | null>(null);
@@ -99,7 +118,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           columnId: 'backlog',
           title: 'Refactor API middleware for auth',
           description: '',
-          dateStr: 'Oct 24',
+          dateStr: nextWeekStr,
           tags: [],
           assignee: { initials: 'JD', avatarColor: 'bg-indigo-100 text-indigo-700' },
         },
@@ -108,7 +127,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           columnId: 'backlog',
           title: 'Documentation for Webhooks',
           description: '',
-          dateStr: 'Oct 29',
+          dateStr: tomorrowStr,
           tags: [],
           assignee: { initials: 'AS', avatarColor: 'bg-cyan-100 text-cyan-700' },
         },
@@ -124,7 +143,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           columnId: 'in-progress',
           title: 'Design System Tonal Layering',
           description: '',
-          dateStr: 'Today',
+          dateStr: todayStr,
           tags: [{ label: 'FRONTEND', color: 'blue' }],
           assignee: { initials: 'BW', avatarColor: 'bg-blue-100 text-blue-700' },
         },
@@ -133,7 +152,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           columnId: 'in-progress',
           title: 'OAuth2 Flow Implementation',
           description: '',
-          dateStr: 'Yesterday',
+          dateStr: yesterdayStr,
           tags: [],
           assignee: { initials: 'RH', avatarColor: 'bg-rose-100 text-rose-700' },
         },
@@ -149,7 +168,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           columnId: 'review',
           title: 'Mobile Responsive Layouts',
           description: '',
-          dateStr: 'Oct 21',
+          dateStr: lastWeekStr,
           tags: [],
           assignee: { initials: 'UD', avatarColor: 'bg-purple-100 text-purple-700' },
         },
@@ -165,7 +184,7 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
           columnId: 'done',
           title: 'Finalize Brand Guidelines',
           description: '',
-          dateStr: 'Oct 15',
+          dateStr: lastWeekStr,
           tags: [],
           assignee: { initials: 'ML', avatarColor: 'bg-green-100 text-green-700' },
         },
@@ -181,7 +200,11 @@ export const BoardView: React.FC<BoardViewProps> = ({ boardId }) => {
   const [targetColumnId, setTargetColumnId] = useState<string>('todo');
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })

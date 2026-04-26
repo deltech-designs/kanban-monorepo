@@ -101,7 +101,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       columnId: status,
       title: title.trim(),
       description,
-      dateStr: dueDate || 'No date',
+      dateStr: dueDate || '',
       assignee,
       tags: task?.tags ?? [],
     };

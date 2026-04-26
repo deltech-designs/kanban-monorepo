@@ -8,6 +8,7 @@ interface AvatarProps {
   src?: string;
   size?: AvatarSize;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const sizeStyles: Record<AvatarSize, { container: string; text: string; px: number }> = {
@@ -23,26 +24,33 @@ const sizeStyles: Record<AvatarSize, { container: string; text: string; px: numb
  */
 const getInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  if (parts.length === 1) {
+    return parts[0].length <= 2 ? parts[0].toUpperCase() : parts[0].charAt(0).toUpperCase();
+  }
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 };
 
-export const Avatar: React.FC<AvatarProps> = ({ name, src, size = 'sm', className = '' }) => {
+export const Avatar: React.FC<AvatarProps> = ({ name, src, size = 'sm', className = '', style }) => {
   const { container, text, px } = sizeStyles[size];
 
   if (src) {
     return (
-      <div className={`${container} rounded-full overflow-hidden flex-shrink-0 ${className}`}>
+      <div className={`${container} rounded-full overflow-hidden flex-shrink-0 ${className}`} style={style}>
         <Image src={src} alt={name} width={px} height={px} className="object-cover w-full h-full" />
       </div>
     );
   }
 
+  // If className doesn't contain a background color, provide a default
+  const hasBg = className.includes('bg-');
+  const defaultColors = hasBg ? '' : 'bg-indigo-100 text-indigo-700';
+
   return (
     <div
-      className={`${container} rounded-full flex-shrink-0 flex items-center justify-center font-bold bg-indigo-100 text-indigo-700 ${text} ${className}`}
+      className={`${container} rounded-full flex-shrink-0 flex items-center justify-center font-bold ${defaultColors} ${text} ${className}`}
       title={name}
       aria-label={name}
+      style={style}
     >
       {getInitials(name)}
     </div>

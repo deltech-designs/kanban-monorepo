@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Board } from '@kanban/types';
+import { AvatarGroup } from '../../../partials/AvatarGroup';
 
 interface BoardCardProps {
   board: Board;
@@ -64,25 +65,16 @@ export function BoardCard({
 
         <div className="relative z-10 mt-auto flex items-center justify-between text-[#64748b] text-[13px] font-medium pt-5">
           {/* Avatar Group */}
-          <div className="flex items-center -space-x-2 relative z-0">
-            <img
-              src="https://i.pravatar.cc/150?img=32"
-              alt="Member"
-              className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm relative z-20"
-            />
-            {membersCount > 1 && (
-              <img
-                src={`https://i.pravatar.cc/150?u=${board.id}`}
-                alt="Member"
-                className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-sm relative z-10"
-              />
-            )}
-            {membersCount > 2 && (
-              <div className="w-7 h-7 rounded-full border-2 border-white bg-[#f8fafc] flex items-center justify-center text-[10px] font-bold text-[#64748b] shadow-sm relative z-0">
-                +{membersCount - 2}
-              </div>
-            )}
-          </div>
+          <AvatarGroup
+            members={[
+              { id: '1', name: 'Member', src: 'https://i.pravatar.cc/150?img=32' },
+              ...(membersCount > 1
+                ? [{ id: '2', name: 'Member', src: `https://i.pravatar.cc/150?u=${board.id}` }]
+                : []),
+            ]}
+            totalCount={membersCount}
+            size="md"
+          />
 
           <div className="flex items-center gap-1.5">
             <svg
