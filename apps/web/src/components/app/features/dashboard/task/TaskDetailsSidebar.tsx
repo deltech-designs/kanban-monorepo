@@ -1,10 +1,11 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SlideOver } from '@/components/app/partials/SlideOver';
 import { Avatar } from '@/components/app/partials/Avatar';
 import { StatusSelect } from '@/components/app/partials/StatusSelect';
 import { AvatarSelect } from '@/components/app/partials/AvatarSelect';
 import { DatePicker } from '@/components/app/partials/DatePicker';
+import { Textarea } from '@/components/app/partials/Textarea';
 import { Task, TaskAssignee } from './TaskCard';
 
 interface TaskDetailsSidebarProps {
@@ -51,6 +52,8 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
   const [dueDate, setDueDate] = useState('');
   const [status, setStatus] = useState('in-progress');
   const [assigneeIndex, setAssigneeIndex] = useState(0);
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen && task) {
@@ -58,6 +61,7 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
       setDescription(task.description);
       setDueDate(task.dateStr);
       setStatus(task.columnId || 'in-progress');
+      setAttachments([]);
       const idx = MOCK_MEMBERS.findIndex((m) => m.initials === task.assignee.initials);
       setAssigneeIndex(idx >= 0 ? idx : 0);
     } else if (isOpen) {
@@ -66,8 +70,27 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
       setDueDate('');
       setStatus('in-progress');
       setAssigneeIndex(0);
+      setAttachments([]);
     }
   }, [isOpen, task]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setAttachments((prev) => [...prev, ...Array.from(e.target.files as FileList)]);
+    }
+    // reset input value so the same file can be selected again if needed
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleAddAttachment = () => {
+    fileInputRef.current?.click();
+  };
+  
+  const removeAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,13 +137,15 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
           </div>
 
           {/* Title */}
-          <textarea
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Task Title"
-            className="w-full text-[26px] leading-tight font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 resize-none overflow-hidden mb-8"
-            rows={2}
-          />
+          <div className="mb-4">
+            <Textarea
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Task Title"
+              className="!text-[26px] leading-tight !font-bold text-gray-900 !bg-transparent !border-none !focus:outline-none !focus:ring-0 !focus:border-transparent !resize-none overflow-hidden !p-0 !shadow-none"
+              rows={2}
+            />
+          </div>
 
           <div className="flex flex-col gap-8">
             {/* STATUS */}
@@ -189,11 +214,11 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                   </svg>
                 }
               />
-              <textarea
+              <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Add a more detailed description..."
-                className="w-full text-sm text-slate-500 leading-relaxed bg-transparent border-none focus:outline-none focus:ring-0 resize-none min-h-[100px] p-0"
+                className="w-full text-sm text-slate-500 leading-relaxed bg-transparent border-none focus:ring-0 focus:border-transparent resize-none min-h-[100px] p-0 shadow-none"
               />
             </div>
 
@@ -207,18 +232,36 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                   </svg>
                 }
               />
-              <div className="flex items-center gap-3">
-                {/* Mock Attachment Thumbnail */}
-                <div className="w-[72px] h-[48px] bg-gradient-to-b from-slate-200 to-slate-400 rounded border border-slate-300 flex items-center justify-center overflow-hidden relative">
-                  <div className="absolute inset-0 bg-white/20"></div>
-                  <div className="w-full flex justify-around px-1">
-                     <div className="w-3 h-4 bg-white/50 rounded-sm"></div>
-                     <div className="w-3 h-4 bg-white/50 rounded-sm"></div>
-                     <div className="w-3 h-4 bg-white/50 rounded-sm"></div>
+              <div className="flex flex-wrap items-center gap-3">
+                {attachments.map((file, idx) => (
+                  <div key={idx} className="group w-[72px] h-[48px] bg-gradient-to-b from-slate-200 to-slate-400 rounded border border-slate-300 flex items-center justify-center overflow-hidden relative">
+                    <div className="absolute inset-0 bg-white/20"></div>
+                    <span className="relative z-10 text-[10px] font-bold text-white px-1 truncate w-full text-center drop-shadow-md" title={file.name}>
+                      {file.name.split('.').pop()?.toUpperCase() || 'FILE'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeAttachment(idx)}
+                      className="absolute top-0.5 right-0.5 p-0.5 bg-black/40 text-white rounded-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </div>
-                </div>
-                {/* Add Attachment Button */}
-                <button type="button" className="w-[48px] h-[48px] border border-dashed border-slate-300 rounded flex items-center justify-center text-slate-400 hover:text-slate-600 hover:border-slate-400 hover:bg-slate-50 transition-colors">
+                ))}
+                <input
+                  type="file"
+                  multiple
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddAttachment}
+                  className="w-[48px] h-[48px] shrink-0 border border-dashed border-slate-300 rounded flex items-center justify-center text-slate-400 hover:text-slate-600 hover:border-slate-400 hover:bg-slate-50 transition-colors"
+                >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
