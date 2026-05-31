@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -6,9 +7,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { ApiResponse } from '@kanban/types';
 import { getEnvVar, isDevelopment } from '@kanban/utils';
 import { API_BASE_URL, APP_NAME, APP_VERSION } from '@kanban/config';
+import { connectDatabase } from './config/database';
+import { seedDatabase } from './config/seed';
 
-import boardRoutes from './routes/boards';
-import taskRoutes from './routes/tasks';
+import boardRoutes from './boards/boards.routes';
+import taskRoutes from './tasks/tasks.routes';
 import healthRoutes from './routes/health';
 
 const app: Express = express();
@@ -84,12 +87,22 @@ app.use((err: Error, req: Request, res: Response<ApiResponse>, next: NextFunctio
 const port = process.env.PORT || 3001;
 const host = process.env.HOST || 'localhost';
 
-app.listen(port, () => {
-  console.log(`\n🚀 ${APP_NAME} API Server`);
-  console.log(`Version: ${APP_VERSION}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Server running at http://${host}:${port}`);
-  console.log(`API Base URL: ${API_BASE_URL}\n`);
+async function startServer() {
+  await connectDatabase();
+  await seedDatabase();
+
+  app.listen(port, () => {
+    console.log(`\n🚀 ${APP_NAME} API Server`);
+    console.log(`Version: ${APP_VERSION}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Server running at http://${host}:${port}`);
+    console.log(`API Base URL: ${API_BASE_URL}\n`);
+  });
+}
+
+startServer().catch((err) => {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
 });
 
 export default app;

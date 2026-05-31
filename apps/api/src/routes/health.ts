@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { ApiResponse } from '@kanban/types';
 
-const router = Router();
+const router: Router = Router();
 
 interface HealthData {
   status: 'healthy' | 'degraded' | 'unhealthy';

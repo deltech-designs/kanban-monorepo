@@ -268,7 +268,6 @@ export const TaskDetailsSidebar: React.FC<TaskDetailsSidebarProps> = ({
                 </button>
               </div>
             </div>
-
             {/* COMMENTS */}
             <div>
               <SectionLabel
