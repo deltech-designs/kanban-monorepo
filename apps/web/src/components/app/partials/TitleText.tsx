@@ -10,7 +10,7 @@ export const TitleText: React.FC<TitleProps> = ({
   children,
   ...props
 }) => {
-  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  const Tag = `h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   const baseStyles = 'text-3xl font-bold text-gray-900 tracking-tight';
 
   return (

@@ -16,6 +16,7 @@ class ApiClient {
 
     const requestOptions: RequestInit = {
       ...restOptions,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         ...headers,

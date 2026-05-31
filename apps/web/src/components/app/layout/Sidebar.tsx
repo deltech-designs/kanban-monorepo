@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { BoardsIcon, LogoutIcon, MembersIcon, PlusIcon, SettingsIcon } from '@/components/app/ui/SidebarIcons';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Board {
   id: string;
@@ -25,6 +26,8 @@ export interface WorkspaceData {
 
 interface SidebarProps {
   workspace?: WorkspaceData;
+  collapsed?: boolean;
+  onToggle?: () => void;
 }
 
 
@@ -37,6 +40,7 @@ export function Sidebar({
 }: SidebarProps = {}) {
   const pathname = usePathname() || '';
   const router = useRouter();
+  const { user, logout } = useAuth();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const isBoardsActive = pathname.startsWith('/dashboard/boards');
   const isMembersActive = pathname.startsWith('/dashboard/members');
@@ -53,7 +57,7 @@ export function Sidebar({
   }
 
   const handleLogout = () => {
-    router.push('/auth/login');
+    logout();
   };
 
   return (
@@ -182,21 +186,38 @@ export function Sidebar({
       {/* Bottom: user row */}
       <div className="px-3 py-4 shrink-0">
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#f8fafc] transition-colors cursor-pointer group">
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[12px] font-bold shrink-0 shadow-sm"
-            style={{ background: 'linear-gradient(135deg, #4A90E2 0%, #357ABD 100%)' }}
-          >
-            JD
-          </div>
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user.name}
+              className="w-8 h-8 rounded-full object-cover shadow-sm border border-slate-100 shrink-0"
+            />
+          ) : (
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[12px] font-bold shrink-0 shadow-sm"
+              style={{ background: 'linear-gradient(135deg, #4A90E2 0%, #357ABD 100%)' }}
+            >
+              {user?.name
+                ? user.name
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .slice(0, 2)
+                : 'U'}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <p className="text-[13px] font-semibold text-[#1e293b] truncate leading-tight">
-              John Doe
+              {user?.name || 'Loading User...'}
             </p>
-            <p className="text-[11px] text-[#94a3b8] leading-tight mt-0.5">john@example.com</p>
+            <p className="text-[11px] text-[#94a3b8] leading-tight mt-0.5 truncate">
+              {user?.email || 'email@example.com'}
+            </p>
           </div>
           <button
             id="sidebar-logout"
-            className="text-[#94a3b8] hover:text-red-500 transition-colors duration-150 shrink-0 p-1 rounded-lg hover:bg-red-50"
+            className="text-[#94a3b8] hover:text-red-500 transition-colors duration-150 shrink-0 p-1 rounded-lg hover:bg-red-50 cursor-pointer"
             title="Logout"
             aria-label="Logout"
             onClick={handleLogout}

@@ -3,12 +3,13 @@
 import React, { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Logo } from '@/components/app/partials/Logo';
 import { TitleText } from '@/components/app/partials/TitleText';
 import { DescriptionText } from '@/components/app/partials/DescriptionText';
 import { Input } from '@/components/app/partials/Input';
 import { Button } from '@/components/app/partials/Button';
 import { AuthDivider } from '@/components/app/ui/AuthDivider';
+import { useAuth } from '@/hooks/useAuth';
+import { GoogleChooserModal } from '@/components/app/ui/GoogleChooserModal';
 
 interface SignInFormFields {
   email: string;
@@ -17,7 +18,10 @@ interface SignInFormFields {
 
 export default function SignInForm() {
   const router = useRouter();
+  const { login, googleLogin } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [googleOpen, setGoogleOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fields, setFields] = useState<SignInFormFields>({
     email: '',
     password: '',
@@ -25,15 +29,39 @@ export default function SignInForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setErrorMessage(null);
     setIsSubmitting(true);
     try {
-      
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      router.push('/dashboard/boards');
+      const result = await login(fields.email, fields.password);
+      if (result.success) {
+        if (result.isVerified === false) {
+          router.push(`/auth/verify-otp?email=${encodeURIComponent(fields.email)}`);
+        }
+      } else {
+        setErrorMessage(result.error || 'Invalid credentials');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An error occurred');
     } finally {
       setIsSubmitting(false);
     }
   }
+
+  const handleGoogleSelect = async (profile: { email: string; name: string; googleId: string; avatar?: string }) => {
+    setGoogleOpen(false);
+    setErrorMessage(null);
+    setIsSubmitting(true);
+    try {
+      const result = await googleLogin(profile);
+      if (!result.success) {
+        setErrorMessage(result.error || 'Google Sign-In failed');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Google Sign-In failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section className="w-full max-w-115 px-4 py-8 sm:px-8">
@@ -46,6 +74,12 @@ export default function SignInForm() {
         <DescriptionText className="text-base text-neutral-700">
           Enter your details to access your workspace.
         </DescriptionText>
+
+        {errorMessage && (
+          <div className="mt-4 p-3.5 rounded-xl border border-rose-100 bg-rose-50 text-[13.5px] font-medium text-rose-600 animate-in fade-in slide-in-from-top-1 duration-200">
+            {errorMessage}
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -104,10 +138,11 @@ export default function SignInForm() {
         type="button"
         variant="outline"
         fullWidth
-        className="h-11 rounded-xl border-transparent bg-primary-light text-[15px] font-semibold text-neutral-800 shadow-none hover:border-[#D8E3F5] hover:bg-[#E8EFFB]"
+        onClick={() => setGoogleOpen(true)}
+        className="h-11 rounded-xl border-transparent bg-primary-light text-[15px] font-semibold text-neutral-800 shadow-none hover:border-[#D8E3F5] hover:bg-[#E8EFFB] cursor-pointer"
       >
         <svg
-          className="h-5 w-5"
+          className="h-5 w-5 mr-2"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
@@ -138,6 +173,12 @@ export default function SignInForm() {
           Sign up for free
         </Link>
       </p>
+
+      <GoogleChooserModal
+        isOpen={googleOpen}
+        onClose={() => setGoogleOpen(false)}
+        onSelect={handleGoogleSelect}
+      />
     </section>
   );
 }

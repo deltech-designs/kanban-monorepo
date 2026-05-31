@@ -9,7 +9,9 @@ import { getEnvVar, isDevelopment } from '@kanban/utils';
 import { API_BASE_URL, APP_NAME, APP_VERSION } from '@kanban/config';
 import { connectDatabase } from './config/database';
 import { seedDatabase } from './config/seed';
+import cookieParser from 'cookie-parser';
 
+import authRoutes from './auth/auth.routes';
 import boardRoutes from './boards/boards.routes';
 import taskRoutes from './tasks/tasks.routes';
 import healthRoutes from './routes/health';
@@ -18,6 +20,7 @@ const app: Express = express();
 
 // Middleware
 app.use(helmet());
+app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
@@ -26,24 +29,25 @@ app.use(
 );
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan(process.env.NODE_DEV === "production" ? "combined" : "dev"));
-
-// Request logging middleware
+// Request ID initialization middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const requestId = uuidv4();
-  const startTime = Date.now();
-
-  res.on('finish', () => {
-    const duration = Date.now() - startTime;
-    console.log(`[${requestId}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`);
-  });
-
-  res.locals.requestId = requestId;
+  res.locals.requestId = uuidv4();
   next();
 });
 
+// Configure Morgan to log using the request ID
+morgan.token('id', (req: Request, res: Response) => res.locals.requestId || 'unknown');
+
+const isProd = process.env.NODE_ENV === 'production';
+const morganFormat = isProd
+  ? '[:id] :remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'
+  : '[:id] :method :url :status :response-time ms - :res[content-length]';
+
+app.use(morgan(morganFormat));
+
 // Routes
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardRoutes);
 app.use('/api/tasks', taskRoutes);
 

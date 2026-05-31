@@ -1,26 +1,30 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/app/partials/Button';
 import { OtpInput } from '@/components/app/ui/OtpInput';
-// import Onboarding from '../dashboard/onboarding';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function VerifyOtp() {
+function VerifyOtpContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') || '';
+  const { verifyOtp } = useAuth();
   const [otp, setOtp] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
     setLoading(true);
     try {
-      console.log('Verifying OTP:', otp);
-      setTimeout(() => {
-        router.push('/workspace');
-      }, 2000);
-    } catch (error) {
-      console.error(error);
+      const result = await verifyOtp(email, otp);
+      if (!result.success) {
+        setErrorMessage(result.error || 'Verification failed. Please try again.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An error occurred during verification');
     } finally {
       setLoading(false);
     }
@@ -44,9 +48,14 @@ export default function VerifyOtp() {
           Verify your account
         </h1>
         <p className="mt-3 mb-2 text-[15px] text-gray-500 leading-relaxed px-2">
-          We&apos;ve sent a 4-digit code to your email. Please enter it below to continue to your
-          Kanban board.
+          We&apos;ve sent a 4-digit code to <strong className="text-gray-700">{email || 'your email'}</strong>. Please enter it below to continue to your Kanban board.
         </p>
+
+        {errorMessage && (
+          <div className="mt-3 mb-4 p-3 rounded-lg border border-rose-100 bg-rose-50 text-[13.5px] font-medium text-rose-600 animate-in fade-in duration-200">
+            {errorMessage}
+          </div>
+        )}
 
         <form onSubmit={handleVerify}>
           <OtpInput length={4} onChange={setOtp} />
@@ -54,10 +63,10 @@ export default function VerifyOtp() {
           <Button
             type="submit"
             fullWidth
-            className="py-3.5 text-base bg-[#3b46f1] hover:bg-blue-700 rounded-xl"
-            disabled={otp.length !== 4}
+            className="py-3.5 text-base bg-[#3b46f1] hover:bg-blue-700 rounded-xl cursor-pointer"
+            disabled={otp.length !== 4 || loading}
           >
-            {loading ? 'verifying...' : 'Verify'}
+            {loading ? 'Verifying...' : 'Verify'}
           </Button>
         </form>
 
@@ -85,8 +94,18 @@ export default function VerifyOtp() {
           </span>
         </div>
       </div>
-
-      {/* {isModalOpen && <WorkspaceSetupModal onClose={() => setIsModalOpen(false)} />} */}
     </div>
+  );
+}
+
+export default function VerifyOtp() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#f7f9fc]">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-600" />
+      </div>
+    }>
+      <VerifyOtpContent />
+    </Suspense>
   );
 }

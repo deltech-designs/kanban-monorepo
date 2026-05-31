@@ -2,14 +2,14 @@
 
 import React, { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { Logo } from '@/components/app/partials/Logo';
 import { useRouter } from 'next/navigation';
 import { TitleText } from '@/components/app/partials/TitleText';
 import { DescriptionText } from '@/components/app/partials/DescriptionText';
 import { Input } from '@/components/app/partials/Input';
 import { Button } from '@/components/app/partials/Button';
 import { AuthDivider } from '@/components/app/ui/AuthDivider';
-import { Sign } from 'crypto';
+import { useAuth } from '@/hooks/useAuth';
+import { GoogleChooserModal } from '@/components/app/ui/GoogleChooserModal';
 
 interface SignUpFormFields {
   fullname: string;
@@ -19,7 +19,10 @@ interface SignUpFormFields {
 
 export function SignupForm() {
   const router = useRouter();
+  const { signup, googleLogin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [googleOpen, setGoogleOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fields, setFields] = useState<SignUpFormFields>({
     fullname: '',
     email: '',
@@ -28,29 +31,54 @@ export function SignupForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setErrorMessage(null);
     setIsLoading(true);
-    try{
-      setTimeout(() =>{
-        router.push('/auth/verify-otp')
-      }, 1500);
-
-    }catch(error){
-      console.error(error)
-    }finally{
-      setIsLoading(false)
+    try {
+      const result = await signup(fields.fullname, fields.email, fields.password);
+      if (result.success) {
+        router.push(`/auth/verify-otp?email=${encodeURIComponent(fields.email)}`);
+      } else {
+        setErrorMessage(result.error || 'Registration failed');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An error occurred during registration');
+    } finally {
+      setIsLoading(false);
     }
   }
+
+  const handleGoogleSelect = async (profile: { email: string; name: string; googleId: string; avatar?: string }) => {
+    setGoogleOpen(false);
+    setErrorMessage(null);
+    setIsLoading(true);
+    try {
+      const result = await googleLogin(profile);
+      if (!result.success) {
+        setErrorMessage(result.error || 'Google Sign-Up failed');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Google Sign-Up failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col w-full h-full px-3 py-5 max-w-[500px] mx-auto">
       {/* Heading */}
-      <div className="w-full mb-8 ">
+      <div className="w-full mb-8">
         <TitleText level={1} className="text-2xl font-bold text-gray-900 mb-2">
           Create your account
         </TitleText>
         <DescriptionText className="text-sm text-gray-500">
           Start managing work with your team.
         </DescriptionText>
+
+        {errorMessage && (
+          <div className="mt-4 p-3.5 rounded-xl border border-rose-100 bg-rose-50 text-[13.5px] font-medium text-rose-600 animate-in fade-in slide-in-from-top-1 duration-200">
+            {errorMessage}
+          </div>
+        )}
       </div>
 
       {/* Google OAuth */}
@@ -58,7 +86,8 @@ export function SignupForm() {
         type="button"
         variant="outline"
         fullWidth
-        className="py-2.5 text-sm text-gray-700 border-gray-300 bg-primary-light hover:bg-gray-50"
+        onClick={() => setGoogleOpen(true)}
+        className="py-2.5 text-sm text-gray-700 border-gray-300 bg-primary-light hover:bg-gray-50 cursor-pointer"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -109,7 +138,7 @@ export function SignupForm() {
           placeholder="jane@example.com"
           value={fields.email}
           onChange={(ev) => {
-            setFields((prev) => ({ ...prev, fullname: ev.target.value }));
+            setFields((prev) => ({ ...prev, email: ev.target.value }));
           }}
           autoComplete="email"
           required
@@ -121,7 +150,7 @@ export function SignupForm() {
           name="password"
           value={fields.password}
           onChange={(ev) => {
-            setFields((prev) => ({ ...prev, fullname: ev.target.value }));
+            setFields((prev) => ({ ...prev, password: ev.target.value }));
           }}
           placeholder="Create a strong password"
           autoComplete="new-password"
@@ -133,7 +162,7 @@ export function SignupForm() {
           fullWidth
           variant="primary"
           disabled={isLoading}
-          className="mt-2  text-[15px]"
+          className="mt-2 text-[15px]"
         >
           {isLoading ? 'Creating account…' : 'Create Account'}
         </Button>
@@ -146,6 +175,12 @@ export function SignupForm() {
           Log in
         </Link>
       </p>
+
+      <GoogleChooserModal
+        isOpen={googleOpen}
+        onClose={() => setGoogleOpen(false)}
+        onSelect={handleGoogleSelect}
+      />
     </div>
   );
 }

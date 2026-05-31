@@ -5,6 +5,7 @@ import { Bell, LogOut, User } from 'lucide-react';
 import { APP_NAME } from '@kanban/config';
 import { Logo } from '../partials/Logo';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface TopNavProps {}
 
@@ -12,6 +13,7 @@ export function TopNav({}: TopNavProps) {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
+  const { user, logout } = useAuth();
 
   // Close the profile menu if the user clicks outside of it
   useEffect(() => {
@@ -30,9 +32,8 @@ export function TopNav({}: TopNavProps) {
   }, [isProfileMenuOpen]);
 
   const handleLogout = () => {
-    // Implement actual logout logic here (e.g., clearing tokens)
     setIsProfileMenuOpen(false);
-    router.push('/auth/login');
+    logout();
   };
 
   return (
@@ -70,10 +71,23 @@ export function TopNav({}: TopNavProps) {
           <button
             id="navbar-user-avatar"
             onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-            className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-[13px] font-bold shadow-sm hover:shadow-md hover:scale-105 hover:ring-4 hover:ring-blue-50 transition-all duration-200"
+            className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center shadow-sm hover:shadow-md hover:scale-105 hover:ring-4 hover:ring-blue-50 transition-all duration-200 outline-none cursor-pointer shrink-0"
             aria-label="User profile"
           >
-            JD
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-[13px] font-bold">
+                {user?.name
+                  ? user.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)
+                  : 'U'}
+              </div>
+            )}
           </button>
 
           {/* Dropdown Menu */}
@@ -81,13 +95,30 @@ export function TopNav({}: TopNavProps) {
             <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-slate-200 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
               <div className="p-4 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0">
-                    JD
-                  </div>
-                  <div className="flex flex-col">
-                    <h3 className="text-[14px] font-bold text-slate-900 leading-tight">Jane Doe</h3>
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-100 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0">
+                      {user?.name
+                        ? user.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')
+                            .toUpperCase()
+                            .slice(0, 2)
+                        : 'U'}
+                    </div>
+                  )}
+                  <div className="flex flex-col min-w-0">
+                    <h3 className="text-[14px] font-bold text-slate-900 leading-tight truncate">
+                      {user?.name || 'Loading User...'}
+                    </h3>
                     <p className="text-[12px] text-slate-500 truncate max-w-[150px]">
-                      jane.doe@example.com
+                      {user?.email || 'email@example.com'}
                     </p>
                   </div>
                 </div>
@@ -95,21 +126,21 @@ export function TopNav({}: TopNavProps) {
 
               <div className="p-2 flex flex-col gap-0.5">
                 <button
-                  className="w-full flex items-center px-3 py-2 text-[12px] font-medium text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="w-full flex items-center px-3 py-2 text-[12px] font-medium text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                   onClick={() => {
                     setIsProfileMenuOpen(false);
                     router.push('/dashboard/settings');
                   }}
                 >
-                  <User className="w-2 h-2 mr-3 text-slate-400" />
+                  <User className="w-4 h-4 mr-3 text-slate-400" />
                   Account Settings
                 </button>
 
                 <button
-                  className="w-full flex items-center px-3 py-2 text-[12px] font-medium text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                  className="w-full flex items-center px-3 py-2 text-[12px] font-medium text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
                   onClick={handleLogout}
                 >
-                  <LogOut className="w-2 h-2 mr-3 text-rose-400" />
+                  <LogOut className="w-4 h-4 mr-3 text-rose-400" />
                   Sign Out
                 </button>
               </div>

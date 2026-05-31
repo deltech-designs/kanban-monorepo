@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import { Inter } from 'next/font/google';
+import { AuthProvider } from '@/hooks/useAuth';
 import './globals.css';
 
 const inter = Inter({
@@ -18,7 +19,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body>
-        <div id="root">{children}</div>
+        <div id="root">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   );

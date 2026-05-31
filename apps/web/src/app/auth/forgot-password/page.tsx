@@ -5,17 +5,32 @@ import Link from 'next/link';
 import { Input } from '@/components/app/partials/Input';
 import { Button } from '@/components/app/partials/Button';
 import { Alert } from '@/components/app/ui/Alert';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { forgotPassword } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      // Add password reset logic here
-      console.log('Sending reset link to:', email);
-      setIsSubmitted(true);
+      setErrorMessage(null);
+      setLoading(true);
+      try {
+        const result = await forgotPassword(email);
+        if (result.success) {
+          setIsSubmitted(true);
+        } else {
+          setErrorMessage(result.error || 'Failed to request password reset link.');
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || 'An error occurred.');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -41,6 +56,12 @@ export default function ForgotPassword() {
               No worries! Enter your email below and we'll send you a link to reset your password.
             </p>
 
+            {errorMessage && (
+              <div className="mb-4 p-3 rounded-lg border border-rose-100 bg-rose-50 text-[13.5px] font-medium text-rose-600 text-left animate-in fade-in duration-200">
+                {errorMessage}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="text-left w-full">
               <Input
                 label="Email Address"
@@ -65,9 +86,10 @@ export default function ForgotPassword() {
               <Button
                 type="submit"
                 fullWidth
+                disabled={loading}
                 className="mt-2 mb-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-[15px]"
               >
-                Send Reset Link
+                {loading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>
           </>
